@@ -13,7 +13,7 @@ import InstructionRow from "../widgets/InstructionRow";
 import { ChevronRightIcon } from "react-native-heroicons/outline";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwt_decode from "jwt-decode";
-import IP_ADDRESS from "../../config"; // Adjust the path as needed
+import IP_ADDRESS from "../config"; // Adjust the path as needed
 import axios from "axios";
 
 const RecipeToggle = ({ RecipeID }) => {

@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { MagnifyingGlassIcon } from "react-native-heroicons/outline";
-import SelectionToggle from "../widgets/SelectionToggle";
+import SelectionToggle from "../../widgets/SelectionToggle";
 import axios from "axios";
 import IP_ADDRESS from "../../config"; // Adjust the path as needed.
 import jwt_decode from "jwt-decode";

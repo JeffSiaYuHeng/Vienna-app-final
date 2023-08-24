@@ -14,7 +14,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Cog6ToothIcon } from "react-native-heroicons/outline";
 import { PencilSquareIcon, CameraIcon } from "react-native-heroicons/solid";
 import axios from "axios";
-import { UserType } from "../UserContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwt_decode from "jwt-decode";
 import IP_ADDRESS from "../../config"; // Adjust the path as needed

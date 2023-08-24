@@ -8,7 +8,7 @@ import {
 import { Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwt_decode from "jwt-decode"; // Assuming you have jwt-decode installed
-import IP_ADDRESS from "../../config"; // Adjust the path as needed
+import IP_ADDRESS from "../config"; // Adjust the path as needed
 import axios from "axios"; // Assuming you have axios installed
 
 export default function FollowButton({ creatorId }) {

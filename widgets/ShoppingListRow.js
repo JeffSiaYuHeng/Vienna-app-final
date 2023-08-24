@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
 import { TrashIcon } from "react-native-heroicons/solid";
-import IP_ADDRESS from "../../config"; // Adjust the path as needed
+import IP_ADDRESS from "../config"; // Adjust the path as needed
 import axios from "axios";
 
 export default function ShoppingListRow({ ItemId, itemName, onDelete }) {

@@ -8,7 +8,7 @@ import {
   Alert,
 } from "react-native";
 import axios from "axios"; // Import axios for making API requests
-import IP_ADDRESS from "../../config"; // Adjust the path as needed
+import IP_ADDRESS from "../config"; // Adjust the path as needed
 import { XMarkIcon } from "react-native-heroicons/solid";
 
 const AddIngredientComponents = ({ onClose, recipeId }) => {

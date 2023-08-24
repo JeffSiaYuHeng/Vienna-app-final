@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { StarIcon, HeartIcon, FireIcon } from "react-native-heroicons/solid";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import axios from "axios";
-import IP_ADDRESS from "../../config"; // Adjust the path as needed
+import IP_ADDRESS from "../config"; // Adjust the path as needed
 
 //rating system
 export function RatingIcon({ rating }) {

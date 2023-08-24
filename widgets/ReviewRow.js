@@ -13,7 +13,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwt_decode from "jwt-decode";
-import IP_ADDRESS from "../../config"; // Adjust the path as needed
+import IP_ADDRESS from "../config"; // Adjust the path as needed
 
 const RatingIcon = ({ rating }) => {
   const renderStars = () => {

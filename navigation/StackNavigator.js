@@ -1,7 +1,6 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Test from "../screens/Test";
 // Authorization
 import WelcomeScreen from "../screens/Authentication/WelcomeScreen";
 import Login from "../screens/Authentication/Login";
@@ -29,6 +28,7 @@ import AddIngredient from "../screens/Recipe/AddIngredient";
 import MyRecipeTabs from "../screens/Recipe/MyRecipeTabs";
 //Settings
 import SettingScreen from "../screens/Settings/SettingScreen";
+import Test from "../screens/Test";
 
 
 
@@ -38,6 +38,8 @@ const StackNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Test" component={Test} />
+
         {/* Authorization */}
         <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
         <Stack.Screen name="Login" component={Login} />

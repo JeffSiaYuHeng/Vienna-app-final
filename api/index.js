@@ -40,14 +40,14 @@ const dietaryRestrictionRoutes = require("./routes/dietaryRestrictionRoutes"); /
 const userDietaryRestrictionRoutes = require("./routes/userDietaryRestrictionRoutes");
 const allergenRoutes = require("./routes/allergenRoutes"); // Import the new allergen route
 const userAllergenRoutes = require("./routes/userAllergenRoutes"); // Import the new userAllergen route
-const ingredientRoutes = require("./routes/RecipeIngredientRoutes"); // Adjust the path as needed
+const recipeIngredientRoutes = require("./routes/recipeIngredientRoutes"); // Adjust the path as needed
+const ingredientRoutes = require("./routes/ingredientRoutes..js"); // Adjust the path as needed
 
 // Use routes
 app.use("/api/users", userRoutes);
 app.use("/api/recipes", recipeRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/instruction", instructionRoutes);
-app.use("/api/ingredients", ingredientRoutes);
 app.use("/api/recipeLikes", recipeLikeRoutes); // Use recipeLikeRoutes under "/recipeLikes" endpoint
 app.use("/api/userFollow", userFollowRoutes); // Use userFollowRoutes under "/userFollow" endpoint
 app.use("/api/savedRecipes", savedRecipeRoutes); // Use savedRecipeRoutes under "/savedRecipes" endpoint
@@ -57,6 +57,7 @@ app.use("/api/dietaryRestrictions", dietaryRestrictionRoutes); // Use dietaryRes
 app.use("/api/userDietaryRestriction", userDietaryRestrictionRoutes);
 app.use("/api/allergen", allergenRoutes); // Use the new allergen route
 app.use("/api/userAllergen", userAllergenRoutes); // Use the new userAllergen route
+app.use("/api/recipeIngredients", recipeIngredientRoutes);
 app.use("/api/ingredients", ingredientRoutes);
 
 

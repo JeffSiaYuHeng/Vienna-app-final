@@ -1,11 +1,14 @@
 const RecipeIngredient = require("../models/RecipeIngredient");
+const Ingredient = require("../models/Ingredient");
+
+
 
 // Create a new recipe ingredient
 const createRecipeIngredient = async (req, res) => {
-  const { RecipeID, IngredientName } = req.body;
+  const { RecipeID, IngredientId } = req.body;
   try {
     // First, let's find the RecipeIngredient by name
-    const recipeIngredient = await Ingredient.findOne({ IngredientName });
+    const recipeIngredient = await Ingredient.findOne({ IngredientId });
 
     if (!recipeIngredient) {
       // If the recipe ingredient doesn't exist, you might want to handle this case
@@ -15,7 +18,7 @@ const createRecipeIngredient = async (req, res) => {
     // Now, create a new RecipeIngredient using the found RecipeIngredient's ID
     const newRecipeIngredient = new RecipeIngredient({
       RecipeID,
-      IngredientId: recipeIngredient.IngredientId, // Assuming this is the correct property name
+      IngredientId: Ingredient.IngredientId, // Assuming this is the correct property name
     });
 
     await newRecipeIngredient.save();
@@ -48,11 +51,11 @@ const getRecipeIngredientsByRecipeId = async (req, res) => {
 
 // Delete a specific recipe ingredient
 const deleteRecipeIngredient = async (req, res) => {
-  const ingredientId = req.params.ingredientId;
+  const RecipeIngredientId = req.params.RecipeIngredientId;
 
   try {
     const deletedRecipeIngredient = await RecipeIngredient.findByIdAndDelete(
-      ingredientId
+      RecipeIngredientId
     );
 
     if (!deletedRecipeIngredient) {

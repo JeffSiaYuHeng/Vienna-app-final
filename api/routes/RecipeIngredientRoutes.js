@@ -1,17 +1,17 @@
 const express = require("express");
 const router = express.Router();
-const ingredientController = require("../controllers/RecipeIngredientController");
+const recipeIngredientController = require("../controllers/recipeIngredientController");
 
 // Create a new recipe ingredient
-router.post("/", ingredientController.createRecipeIngredient);
+router.post("/", recipeIngredientController.createRecipeIngredient);
 
 // Get all recipe ingredients for a specific recipe
-router.get("/:recipeId", ingredientController.getRecipeIngredientsByRecipeId);
+router.get("/:recipeId", recipeIngredientController.getRecipeIngredientsByRecipeId);
 
 // Delete a specific recipe ingredient
 router.delete(
-  "/delete/:ingredientId",
-  ingredientController.deleteRecipeIngredient
+  "/delete/:RecipeIngredientId",
+  recipeIngredientController.deleteRecipeIngredient
 );
 
 module.exports = router;

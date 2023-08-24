@@ -1,7 +1,7 @@
-const Allergen = require("./models/Allergen");
+const Allergen = require("../models/Allergen");
 
 // Controller function to get all allergens
-exports.getAllAllergens = async (req, res) => {
+const getAllAllergens = async (req, res) => {
   try {
     const allergens = await Allergen.find();
 
@@ -14,4 +14,8 @@ exports.getAllAllergens = async (req, res) => {
     console.error("Error fetching allergen", error);
     res.status(500).json({ message: "Internal server error" });
   }
+};
+
+module.exports = {
+  getAllAllergens,
 };

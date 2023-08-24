@@ -8,7 +8,7 @@ import {
 import React, { useEffect, useState } from "react";
 import TitleComponent from "./TitleComponent";
 import RecipeCard from "../widgets/RecipeCard";
-import IP_ADDRESS from "../../config"; // Adjust the path as needed
+import IP_ADDRESS from "../config"; // Adjust the path as needed
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import axios from "axios";
@@ -31,7 +31,6 @@ export default function TrendingComponent() {
           `http://${IP_ADDRESS}:8000/api/recipes/home`
         );
         setRecipes(response.data.recipes);
-        setLoading(false);
       } catch (error) {
         console.error("Error fetching recipes", error);
       }

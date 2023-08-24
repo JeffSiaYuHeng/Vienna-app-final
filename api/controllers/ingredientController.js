@@ -1,8 +1,7 @@
 const RecipeIngredient = require("../models/RecipeIngredient");
-const Ingredient = require("./models/Ingredient");
 
 // Create a new recipe ingredient
-const createIngredient = async (req, res) => {
+const createRecipeIngredient = async (req, res) => {
   const { RecipeID, IngredientName } = req.body;
   try {
     // First, let's find the RecipeIngredient by name

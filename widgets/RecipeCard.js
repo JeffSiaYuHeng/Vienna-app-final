@@ -5,7 +5,8 @@ import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwt_decode from "jwt-decode";
-import IP_ADDRESS from "../../config"; // Adjust the path as needed
+import IP_ADDRESS from "../config"; // Adjust the path as needed
+import { ActivityIndicator } from "react-native";
 //rating system
 export function RatingIcon({ rating }) {
   const renderStars = () => {
@@ -47,9 +48,10 @@ export default function RecipeCard({
   const filename = cleanedImageUrl ? cleanedImageUrl.split("/").pop() : ""; // Add a conditional check
   const source = { uri: `http://${IP_ADDRESS}:8000/api/files/${filename}` };
   const imgUrlSource = source;
+  const [loading, setLoading] = useState(true);
 
   const [userProfile, setUserProfile] = useState([]);
-  const [ingredients, setIngredients] = useState([]);
+  // const [ingredients, setIngredients] = useState([]);
   const [recipeLikes, setRecipeLikes] = useState([]);
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -84,23 +86,28 @@ export default function RecipeCard({
     }, [RecipeID]) // Dependency array includes RecipeID
   );
 
-  const totalRecipeLikes = recipeLikes.length;
+  // const totalRecipeLikes = recipeLikes.length;
 
-  useFocusEffect(
-    React.useCallback(() => {
-      const fetchIngredients = async () => {
-        try {
-          const response = await axios.get(
-            `http://${IP_ADDRESS}:8000/api/ingredients/${RecipeID}`
-          );
-          setIngredients(response.data.Ingredients);
-        } catch (error) {
-          console.error("Error fetching Ingredients", error);
-        }
-      };
-      fetchIngredients();
-    }, []) // Dependency array includes RecipeID
-  );
+  const totalRecipeLikes = 12;
+
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     const fetchIngredients = async () => {
+  //       try {
+  //         const response = await axios.get(
+  //           `http://${IP_ADDRESS}:8000/api/ingredients/${RecipeID}`
+  //         );
+  //         setIngredients(response.data.Ingredients);
+  //         setLoading(false);
+  //       } catch (error) {
+  //         console.error("Error fetching Ingredients", error);
+  //       }
+  //     };
+  //     fetchIngredients();
+  //   }, []) // Dependency array includes RecipeID
+  // );
+
+  // console.log(ingredients);
 
   const imgUrlUser = userProfile.UserImage;
 
@@ -129,6 +136,13 @@ export default function RecipeCard({
       ? `${Math.floor(Cooking_Time / 60)} hour ${Cooking_Time % 60} minutes`
       : `${Cooking_Time} minutes`;
 
+  if (loading) {
+    return (
+      <View className="w-100 h-screen items-center justify-center">
+        <ActivityIndicator size="large" color="#7caf75" />
+      </View>
+    );
+  }
   return (
     <TouchableOpacity
       onPress={() => {
@@ -139,7 +153,7 @@ export default function RecipeCard({
           Description,
           formattedDate,
           rates,
-          ingredients,
+          // ingredients,
           Calorie,
           username,
           sourceUser,
@@ -191,7 +205,7 @@ export default function RecipeCard({
           </View>
           <View className="flex-row ">
             <View className="flex-row">
-              {ingredients.length > 0 ? (
+              {/* {ingredients.length > 0 ? (
                 ingredients.slice(0, 3).map((ingredient, index) => (
                   <View
                     key={index}
@@ -204,7 +218,7 @@ export default function RecipeCard({
                 ))
               ) : (
                 <Text className="ml-2"></Text>
-              )}
+              )} */}
             </View>
           </View>
         </View>

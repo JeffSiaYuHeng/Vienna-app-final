@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const userAllergenSchema = new mongoose.Schema({
+const userDietaryRestrictionSchema = new mongoose.Schema({
   userId: {
     type: String,
     required: true,
@@ -11,6 +11,9 @@ const userAllergenSchema = new mongoose.Schema({
   },
 });
 
-const userAllergen = mongoose.model('userAllergen', userAllergenSchema);
+const userDietaryRestriction = mongoose.model(
+  "userDietaryRestriction",
+  userDietaryRestrictionSchema
+);
 
-module.exports = userAllergen;
+module.exports = userDietaryRestriction;

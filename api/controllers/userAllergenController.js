@@ -1,7 +1,7 @@
-const UserAllergen = require("./models/UserAllergen");
+const UserAllergen = require("../models/UserAllergen");
 
 // Controller function to create user allergens
-exports.createUserAllergens = async (req, res) => {
+const createUserAllergens = async (req, res) => {
   try {
     // Extract the data from the request body
     const userAllergens = req.body;
@@ -36,4 +36,8 @@ exports.createUserAllergens = async (req, res) => {
       .status(500)
       .json({ error: "An error occurred while creating the User Allergens" });
   }
+};
+
+module.exports = {
+  createUserAllergens,
 };

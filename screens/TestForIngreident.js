@@ -3,6 +3,10 @@ import { View, TextInput, FlatList, Text } from "react-native";
 import axios from "axios";
 import IP_ADDRESS from "../config"; // Adjust the path as needed
 
+
+
+
+
 const data = [
   { id: 1, name: "Apple" },
   { id: 2, name: "Banana" },
@@ -15,22 +19,24 @@ const App = () => {
   const [searchText, setSearchText] = useState("");
   const [filteredData, setFilteredData] = useState(data);
 
-  // useEffect(() => {
-  //   const fetchIngredients = async () => {
-  //     try {
-  //       const response = await axios.get(
-  //         `http://${IP_ADDRESS}:8000/ingredients`
-  //       );
-  //       setIngredients(response.data);
-  //       setLoading(false);
-  //     } catch (error) {
-  //       console.error(error);
-  //       setLoading(false);
-  //     }
-  //   };
+  useEffect(() => {
+    const Ingredient = async () => {
+      try {
+        const response = await axios.get(
+          `http://${IP_ADDRESS}:8000/api/ingredients/`
+        );
+        setIngredients(response.data);
+        setLoading(false);
+      } catch (error) {
+        console.error(error);
+        setLoading(false);
+      }
+    };
 
-  //   fetchIngredients();
-  // }, []);
+    Ingredient();
+  }, []);
+
+
 
   const handleSearch = (text) => {
     setSearchText(text);

@@ -10,7 +10,7 @@ import {
 import React, { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios"; // Import axios for making API requests
-// import IP_ADDRESS from "../config"; // Adjust the path as needed
+import IP_ADDRESS from "../../config"; // Adjust the path as needed
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Register() {
@@ -20,30 +20,22 @@ export default function Register() {
   const [password, setPassword] = useState("");
   const [confirmedPassword, setConfirmedPassword] = useState(""); // New state for confirmed password
 
-  // useEffect(() => {
-  //   const checkLoginStatus = async () => {
-  //     try {
-  //       const token = await AsyncStorage.getItem("authToken");
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        const token = await AsyncStorage.getItem("authToken");
 
-  //       if (token) {
-  //         navigation.replace("Tabs");
-  //       } else {
-  //         // token not found , show the login screen itself
-  //       }
-  //     } catch (error) {
-  //       console.log("error", error);
-  //     }
-  //   };
-
-  //   checkLoginStatus();
-  // }, []);
-
-  // const isValidEmail = (email) => {
-  //   // Regular expression for email validation
-  //   const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-
-  //   return emailRegex.test(email);
-  // };
+        if (token) {
+          navigation.replace("TabNavigator");
+        } else {
+          // token not found , show the login screen itself
+        }
+      } catch (error) {
+        console.log("error", error);
+      }
+    };
+    checkLoginStatus();
+  }, []);
 
   const handleRegister = () => {
     //User Input Detail validation
@@ -104,7 +96,7 @@ export default function Register() {
     };
 
     axios
-      .post(`http://${IP_ADDRESS}:8000/register`, user)
+      .post(`http://${IP_ADDRESS}:8000/api/users/register`, user)
       .then((response) => {
         console.log("API Response:", response); // Log the API response
         Alert.alert(

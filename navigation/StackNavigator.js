@@ -5,6 +5,9 @@ import Test from "../screens/Test";
 import WelcomeScreen from "../screens/Authentication/WelcomeScreen";
 import Login from "../screens/Authentication/Login";
 import Register from "../screens/Authentication/Register";
+import TabNavigator from "./TabNavigator";
+import EditProfile from "../screens/UserProfileSetup/EditProfile";
+import SettingScreen from "../screens/Settings/SettingScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -13,13 +16,21 @@ const StackNavigator = () => {
     <NavigationContainer>
       {/* <AddRecipe /> */}
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {/* <Stack.Screen name="Test" component={Test} /> */}
-        {/* WelcomeScreen & Initialize */}
+        {/* Authorization */}
         <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Register" component={Register} />
+        {/* AuthorizationEND */}
+        {/* User Profile Setup */}
+        <Stack.Screen name="EditProfile" component={EditProfile} />
+        {/* User Profile Setup END */}
+        {/* MainAppNavigation */}
+        <Stack.Screen name="TabNavigator" component={TabNavigator} />
+        {/* MainAppNavigation END */}
+        {/* Setting */}
+        <Stack.Screen name="SettingScreen" component={SettingScreen} />
 
-        {/* WelcomeScreen & Initialize */}
+        {/* Setting END */}
       </Stack.Navigator>
     </NavigationContainer>
   );

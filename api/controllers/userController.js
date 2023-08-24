@@ -4,6 +4,19 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
+//function to create a token for the user
+const createToken = (userId) => {
+  // Set the token payload
+  const payload = {
+    userId: userId,
+  };
+
+  // Generate the token with a secret key and expiration time
+  const token = jwt.sign(payload, "Q$r2K6W8n!jCW%Zk", { expiresIn: "1h" });
+
+  return token;
+};
+
 // User Register
 const registerUser = async (req, res) => {
   const { username, email, password } = req.body;
@@ -64,7 +77,7 @@ const loginUser = async (req, res) => {
   }
 };
 
-//Get The UserProfile by refer its ID
+// Get The UserProfile by refer its ID
 const getUserById = async (req, res) => {
   const userId = req.params.userId;
 
@@ -76,26 +89,22 @@ const getUserById = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Return the user information
-    res.status(200).json({
-      userId: user._id,
-      username: user.username,
-      email: user.email,
-      // Add more fields as needed
-    });
+    // Return the entire user object
+    res.status(200).json(user);
   } catch (error) {
     console.log("Error fetching user information", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
 
+
+
 const updateUserProfile = async (req, res) => {
   const userId = req.params.userId;
   const { firstName, lastName } = req.body;
-
   try {
     // Check if the user exists
-    const user = await User.findById(userId);
+    const user = await User.findById({ _id: userId });
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });

@@ -10,59 +10,59 @@ import React, { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-// import IP_ADDRESS from "../../config"; // Adjust the path as needed
+import IP_ADDRESS from "../../config";
 
 const Login = () => {
   const navigation = useNavigation();
 
-  // const [email, setEmail] = useState("");
-  // const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  // useEffect(() => {
-  //   const checkLoginStatus = async () => {
-  //     try {
-  //       const token = await AsyncStorage.getItem("authToken");
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        const token = await AsyncStorage.getItem("authToken");
 
-  //       if (token) {
-  //         navigation.replace("Tabs");
-  //       } else {
-  //         // token not found , show the login screen itself
-  //       }
-  //     } catch (error) {
-  //       console.log("error", error);
-  //     }
-  //   };
+        if (token) {
+          navigation.replace("TabNavigator");
+        } else {
+          // token not found , show the login screen itself
+        }
+      } catch (error) {
+        console.log("error", error);
+      }
+    };
 
-  //   checkLoginStatus();
-  // }, []);
+    checkLoginStatus();
+  }, []);
 
-  // const handleLogin = async () => {
-  //   const user = {
-  //     email: email,
-  //     password: password,
-  //   };
+  const handleLogin = async () => {
+    const user = {
+      email: email,
+      password: password,
+    };
 
-  //   try {
-  //     const response = await axios.post(
-  //       `http://${IP_ADDRESS}:8000/login`,
-  //       user
-  //     );
-  //     console.log(response);
+    try {
+      const response = await axios.post(
+        `http://${IP_ADDRESS}:8000/api/users/login`,
+        user
+      );
+      console.log(response);
 
-  //     const token = response.data.token;
-  //     AsyncStorage.setItem("authToken", token);
-  //     Alert.alert("Login successful", "You have been Login Successfully");
-  //     navigation.replace("Tabs");
-  //   } catch (error) {
-  //     if (error.response) {
-  //       console.log("Login Error", error.response.data);
-  //       Alert.alert("Login Error", "Invalid email or password");
-  //     } else {
-  //       console.log("Login Error", error.message);
-  //       Alert.alert("Login Error", "An error occurred during login");
-  //     }
-  //   }
-  // };
+      const token = response.data.token;
+      AsyncStorage.setItem("authToken", token);
+      Alert.alert("Login successful", "You have been Login Successfully");
+      navigation.replace("TabNavigator");
+    } catch (error) {
+      if (error.response) {
+        console.log("Login Error", error.response.data);
+        Alert.alert("Login Error", "Invalid email or password");
+      } else {
+        console.log("Login Error", error.message);
+        Alert.alert("Login Error", "An error occurred during login");
+      }
+    }
+  };
 
   return (
     <View className="w-full h-full items-center pb-10 pt-20">
@@ -95,16 +95,16 @@ const Login = () => {
         <View className="w-full">
           <Text className=" text-gray-500 mb-1">Email:</Text>
           <TextInput
-            // value={email}
-            // onChangeText={(text) => setEmail(text)}
+            value={email}
+            onChangeText={(text) => setEmail(text)}
             className="w-full border-[1px] h-10 border-gray-500 rounded-[5px] pl-2"
           />
         </View>
         <View className="w-full">
           <Text className=" text-gray-500 mb-1">Password:</Text>
           <TextInput
-            // value={password}
-            // onChangeText={(text) => setPassword(text)}
+            value={password}
+            onChangeText={(text) => setPassword(text)}
             secureTextEntry={true}
             className="w-full border-[1px] h-10 border-gray-500 rounded-[5px] pl-2"
           />
@@ -114,7 +114,7 @@ const Login = () => {
       {/* Login Button */}
       <View className="items-start w-[320] pt-6 gap-2">
         <TouchableOpacity
-          // onPress={handleLogin}
+          onPress={handleLogin}
           className="ml-2 w-[320]  bg-C87C17C h-10 items-center justify-center rounded-[5px]"
         >
           <Text className="text-white font-bold text-base">Login</Text>

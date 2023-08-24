@@ -31,7 +31,7 @@ const createRecipeIngredient = async (req, res) => {
 };
 
 // Get all recipe ingredients for a specific recipe
-const getIngredientsByRecipeId = async (req, res) => {
+const getRecipeIngredientsByRecipeId = async (req, res) => {
   const recipeId = req.params.recipeId;
 
   try {
@@ -47,7 +47,7 @@ const getIngredientsByRecipeId = async (req, res) => {
 };
 
 // Delete a specific recipe ingredient
-const deleteIngredient = async (req, res) => {
+const deleteRecipeIngredient = async (req, res) => {
   const ingredientId = req.params.ingredientId;
 
   try {
@@ -67,7 +67,7 @@ const deleteIngredient = async (req, res) => {
 };
 
 module.exports = {
-  createIngredient,
-  getIngredientsByRecipeId,
-  deleteIngredient,
+  createRecipeIngredient,
+  getRecipeIngredientsByRecipeId,
+  deleteRecipeIngredient,
 };

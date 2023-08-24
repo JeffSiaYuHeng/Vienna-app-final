@@ -40,7 +40,7 @@ const dietaryRestrictionRoutes = require("./routes/dietaryRestrictionRoutes"); /
 const userDietaryRestrictionRoutes = require("./routes/userDietaryRestrictionRoutes");
 const allergenRoutes = require("./routes/allergenRoutes"); // Import the new allergen route
 const userAllergenRoutes = require("./routes/userAllergenRoutes"); // Import the new userAllergen route
-const ingredientRoutes = require("./routes/ingredientRoutes"); // Adjust the path as needed
+const ingredientRoutes = require("./routes/RecipeIngredientRoutes"); // Adjust the path as needed
 
 // Use routes
 app.use("/api/users", userRoutes);

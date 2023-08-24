@@ -54,51 +54,51 @@ export default function AccountScreens() {
   );
 
   // Create variable that only can access by Set
-  // const [recipeLikes, setRecipeLikes] = useState([]);
-  // const [followeds, setFollowed] = useState([]);
-  // const [followers, setFollower] = useState([]);
+  const [recipeLikes, setRecipeLikes] = useState([]);
+  const [followeds, setFollowed] = useState([]);
+  const [followers, setFollower] = useState([]);
 
-  // useFocusEffect(
-  //   React.useCallback(() => {
-  //     const fetchData = async () => {
-  //       try {
-  //         const token = await AsyncStorage.getItem("authToken");
-  //         const decodedToken = jwt_decode(token);
-  //         const userId = decodedToken.userId;
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchData = async () => {
+        try {
+          const token = await AsyncStorage.getItem("authToken");
+          const decodedToken = jwt_decode(token);
+          const userId = decodedToken.userId;
 
-  //         // Fetch Recipe Likes
-  //         const recipeLikesResponse = await axios.get(
-  //           `http://${IP_ADDRESS}:8000/api/recipeLikes/byUser?userId=${userId}`
-  //         );
-  //         setRecipeLikes(recipeLikesResponse.data);
+          // Fetch Recipe Likes
+          const recipeLikesResponse = await axios.get(
+            `http://${IP_ADDRESS}:8000/api/recipeLikes/byUser?userId=${userId}`
+          );
+          setRecipeLikes(recipeLikesResponse.data);
 
-  //         // Fetch Followed
-  //         const followedResponse = await axios.get(
-  //           `http://${IP_ADDRESS}:8000/api/userFollow/followed?userId=${userId}`
-  //         );
-  //         if (followedResponse.data) {
-  //           setFollowed(followedResponse.data);
-  //         }
+          // Fetch Followed
+          const followedResponse = await axios.get(
+            `http://${IP_ADDRESS}:8000/api/userFollow/followed?userId=${userId}`
+          );
+          if (followedResponse.data) {
+            setFollowed(followedResponse.data);
+          }
 
-  //         // Fetch Followers
-  //         const followerResponse = await axios.get(
-  //           `http://${IP_ADDRESS}:8000/api/userFollow/follower?userId=${userId}`
-  //         );
-  //         if (followerResponse.data) {
-  //           setFollower(followerResponse.data);
-  //         }
-  //       } catch (error) {
-  //         console.log("Error fetching data", error);
-  //       }
-  //     };
+          // Fetch Followers
+          const followerResponse = await axios.get(
+            `http://${IP_ADDRESS}:8000/api/userFollow/follower?userId=${userId}`
+          );
+          if (followerResponse.data) {
+            setFollower(followerResponse.data);
+          }
+        } catch (error) {
+          console.log("Error fetching data", error);
+        }
+      };
 
-  //     fetchData();
-  //   }, [])
-  // );
+      fetchData();
+    }, [])
+  );
 
-  // const LikeCount = recipeLikes.length;
-  // const FollowingCount = followeds.length;
-  // const FollowersCount = followers.length;
+  const LikeCount = recipeLikes.length;
+  const FollowingCount = followeds.length;
+  const FollowersCount = followers.length;
 
   if (!userProfile && loading) {
     return (
@@ -179,7 +179,7 @@ export default function AccountScreens() {
             <Text className="pt-2 text-center">{userProfile.email}</Text>
           </View>
 
-          {/* <View className="flex-row w-full h-20 p-3 pt-6 justify-around">
+          <View className="flex-row w-full h-20 p-3 pt-6 justify-around">
             <TouchableOpacity
               onPress={() => navigation.navigate("UserFollowers")}
               className=" border-gray-200 w-20 h-18 justify-center  text-center items-center"
@@ -201,7 +201,7 @@ export default function AccountScreens() {
               <Text className="text-gray-600 font-bold">Likes</Text>
               <Text>{!LikeCount ? "0" : LikeCount}</Text>
             </TouchableOpacity>
-          </View> */}
+          </View>
         </View>
       </View>
     </SafeAreaView>

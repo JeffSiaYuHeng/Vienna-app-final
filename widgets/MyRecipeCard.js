@@ -49,21 +49,21 @@ export default function MyRecipeCard({
 
   const [ingredients, setIngredients] = useState([]);
 
-  useFocusEffect(
-    React.useCallback(() => {
-      const fetchIngredients = async () => {
-        try {
-          const response = await axios.get(
-            `http://${IP_ADDRESS}:8000/api/ingredients/${RecipeID}`
-          );
-          setIngredients(response.data.Ingredients);
-        } catch (error) {
-          console.error("Error fetching Ingredients", error);
-        }
-      };
-      fetchIngredients();
-    }, []) // Dependency array includes RecipeID
-  );
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     const fetchIngredients = async () => {
+  //       try {
+  //         const response = await axios.get(
+  //           `http://${IP_ADDRESS}:8000/api/ingredients/${RecipeID}`
+  //         );
+  //         setIngredients(response.data.Ingredients);
+  //       } catch (error) {
+  //         console.error("Error fetching Ingredients", error);
+  //       }
+  //     };
+  //     fetchIngredients();
+  //   }, []) // Dependency array includes RecipeID
+  // );
 
   const formattedDate = new Date(date).toLocaleDateString("en-US", {
     day: "numeric",

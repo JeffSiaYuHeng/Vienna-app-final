@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import IngredientRow from "../widgets/IngredientRow";
+// import IngredientRow from "../widgets/IngredientRow";
 import InstructionRow from "../widgets/InstructionRow";
 import { ChevronRightIcon } from "react-native-heroicons/outline";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -23,17 +23,17 @@ const RecipeToggle = ({ RecipeID }) => {
   const [shoppingList, setShoppingList] = useState([]);
 
   useEffect(() => {
-    const fetchIngredients = async () => {
-      try {
-        const response = await axios.get(
-          `http://${IP_ADDRESS}:8000/api/ingredients/${RecipeID}`
-        );
-        setIngredients(response.data.Ingredients);
-      } catch (error) {
-        console.error("Error fetching Ingredients", error);
-      }
-    };
-    fetchIngredients();
+  //   const fetchIngredients = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         `http://${IP_ADDRESS}:8000/api/ingredients/${RecipeID}`
+  //       );
+  //       setIngredients(response.data.Ingredients);
+  //     } catch (error) {
+  //       console.error("Error fetching Ingredients", error);
+  //     }
+  //   };
+  //   fetchIngredients();
 
     const fetchInstructions = async () => {
       try {
@@ -133,7 +133,7 @@ const RecipeToggle = ({ RecipeID }) => {
               </TouchableOpacity>
             </View>
             {/* Inner content of the collapsible section */}
-            {ingredients.length > 0 ? (
+            {/* {ingredients.length > 0 ? (
               ingredients.map((ingredient) => (
                 <IngredientRow
                   key={ingredient._id} // Use a unique identifier from your data here
@@ -143,7 +143,7 @@ const RecipeToggle = ({ RecipeID }) => {
               ))
             ) : (
               <Text className="ml-2">No ingredients found.</Text>
-            )}
+            )} */}
           </View>
         )}
       </View>

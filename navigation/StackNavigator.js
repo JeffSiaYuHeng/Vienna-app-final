@@ -23,12 +23,12 @@ import AddRecipe from "../screens/Recipe/AddRecipe";
 import EditRecipe from "../screens/Recipe/EditRecipe";
 import RecipeTabs from "../screens/Recipe/RecipeTabs";
 import InstructionIngredient from "../screens/Recipe/InstructionIngredient";
-import AddInstruction from "../screens/Recipe/AddInstruction";
-import AddIngredient from "../screens/Recipe/AddIngredient";
+// import AddInstruction from "../screens/Recipe/AddInstruction";
+// import AddIngredient from "../screens/Recipe/AddIngredient";
 import MyRecipeTabs from "../screens/Recipe/MyRecipeTabs";
 //Settings
 import SettingScreen from "../screens/Settings/SettingScreen";
-import Test from "../screens/Test";
+import TestForIngreident from "../screens/TestForIngreident";
 
 
 
@@ -38,7 +38,7 @@ const StackNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Test" component={Test} />
+      <Stack.Screen name="TestForIngreident" component={TestForIngreident} />
 
         {/* Authorization */}
         <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
@@ -81,8 +81,8 @@ const StackNavigator = () => {
           name="InstructionIngredient"
           component={InstructionIngredient}
         />
-        <Stack.Screen name="AddInstruction" component={AddInstruction} />
-        <Stack.Screen name="AddIngredient" component={AddIngredient} />
+        {/* <Stack.Screen name="AddInstruction" component={AddInstruction} />
+        <Stack.Screen name="AddIngredient" component={AddIngredient} /> */}
         <Stack.Screen name="MyRecipeTabs" component={MyRecipeTabs} />
         {/* Recipe END*/}
 

@@ -73,18 +73,18 @@ const Test = () => {
   }, []);
 
   useEffect(() => {
-    const fetchIngredients = async () => {
-      try {
-        const response = await axios.get(
-          `http://${IP_ADDRESS}:8000/api/ingredients/${RecipeID}`
-        );
-        setIngredients(response.data.Ingredients);
-      } catch (error) {
-        console.error("Error fetching Ingredients", error);
-      }
-    };
+    // const fetchIngredients = async () => {
+    //   try {
+    //     const response = await axios.get(
+    //       `http://${IP_ADDRESS}:8000/api/ingredients/${RecipeID}`
+    //     );
+    //     setIngredients(response.data.Ingredients);
+    //   } catch (error) {
+    //     console.error("Error fetching Ingredients", error);
+    //   }
+    // };
 
-    fetchIngredients();
+    // fetchIngredients();
 
     const fetchInstructions = async () => {
       try {

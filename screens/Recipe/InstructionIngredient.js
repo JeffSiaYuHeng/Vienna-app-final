@@ -15,42 +15,42 @@ import AddInstructionRow from "../../widgets/AddInstructionRow";
 import axios from "axios";
 import IP_ADDRESS from "../../config"; // Adjust the path as needed
 import AddInstructionComponents from "../../components/AddInstructionComponents"; // Import the component
-import AddIngredientComponents from "../../components/AddIngredientComponents";
-import AddIngredientRow from "../../widgets/AddIngredientRow";
+// import AddIngredientComponents from "../../components/AddIngredientComponents";
+// import AddIngredientRow from "../../widgets/AddIngredientRow";
 
 const InstructionIngredient = ({ route }) => {
   const { recipeId } = route.params;
   const navigation = useNavigation();
 
-  const [ingredients, setIngredients] = useState([]);
+  // const [ingredients, setIngredients] = useState([]);
   const [showAddIngredient, setShowAddIngredient] = useState(false);
   const toggleAddIngredient = () => {
     setShowAddIngredient(!showAddIngredient);
   };
 
   const closeAddIngredient = async () => {
-    try {
-      // Refresh the page
-      const response = await axios.get(
-        `http://${IP_ADDRESS}:8000/api/ingredients/${recipeId}`
-      );
-      setIngredients(response.data.Ingredients);
-    } catch (error) {
-      console.error("Error fetching Ingredients", error);
-    }
-    setShowAddIngredient(false);
+    // try {
+    //   // Refresh the page
+    //   const response = await axios.get(
+    //     `http://${IP_ADDRESS}:8000/api/ingredients/${recipeId}`
+    //   );
+    //   setIngredients(response.data.Ingredients);
+    // } catch (error) {
+    //   console.error("Error fetching Ingredients", error);
+    // }
+    // setShowAddIngredient(false);
   };
 
   const handleDeleteIngredient = async () => {
-    try {
-      // Refresh the page
-      const response = await axios.get(
-        `http://${IP_ADDRESS}:8000/api/ingredients/${recipeId}`
-      );
-      setIngredients(response.data.Ingredients);
-    } catch (error) {
-      console.error("Error fetching Ingredients", error);
-    }
+    // try {
+    //   // Refresh the page
+    //   const response = await axios.get(
+    //     `http://${IP_ADDRESS}:8000/api/ingredients/${recipeId}`
+    //   );
+    //   setIngredients(response.data.Ingredients);
+    // } catch (error) {
+    //   console.error("Error fetching Ingredients", error);
+    // }
   };
 
   const [instructions, setInstructions] = useState([]);
@@ -73,18 +73,18 @@ const InstructionIngredient = ({ route }) => {
   };
 
   useEffect(() => {
-    const fetchIngredients = async () => {
-      try {
-        const response = await axios.get(
-          `http://${IP_ADDRESS}:8000/api/ingredients/${recipeId}`
-        );
-        setIngredients(response.data.Ingredients);
-      } catch (error) {
-        console.error("Error fetching Ingredients", error);
-      }
-    };
+    // const fetchIngredients = async () => {
+    //   try {
+    //     const response = await axios.get(
+    //       `http://${IP_ADDRESS}:8000/api/ingredients/${recipeId}`
+    //     );
+    //     setIngredients(response.data.Ingredients);
+    //   } catch (error) {
+    //     console.error("Error fetching Ingredients", error);
+    //   }
+    // };
 
-    fetchIngredients();
+    // fetchIngredients();
 
     const fetchInstructions = async () => {
       try {
@@ -140,7 +140,7 @@ const InstructionIngredient = ({ route }) => {
               Add Ingredient
             </Text>
           </TouchableOpacity>
-          {ingredients.length > 0 ? (
+          {/* {ingredients.length > 0 ? (
             ingredients.map((ingredient) => (
               <AddIngredientRow
                 key={ingredient._id} // Use a unique identifier from your data here
@@ -151,7 +151,7 @@ const InstructionIngredient = ({ route }) => {
             ))
           ) : (
             <Text className="ml-2">No ingredients found.</Text>
-          )}
+          )} */}
         </View>
 
         <View

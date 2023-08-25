@@ -10,21 +10,21 @@ export default function AddIngredientRow({
   onDelete,
 }) {
   const handleDeleteIngredient = async () => {
-    try {
-      const response = await fetch(
-        `http://${IP_ADDRESS}:8000/api/ingredients/delete/${IngredientID}`,
-        {
-          method: "DELETE",
-        }
-      );
-      const data = await response.json();
-      console.log(data.message);
-      onDelete();
-      // Add any additional logic or UI updates after successful deletion
-    } catch (error) {
-      console.log("Error deleting ingredient", error);
-      console.log(error.message);
-    }
+    // try {
+    //   const response = await fetch(
+    //     `http://${IP_ADDRESS}:8000/api/ingredients/delete/${IngredientID}`,
+    //     {
+    //       method: "DELETE",
+    //     }
+    //   );
+    //   const data = await response.json();
+    //   console.log(data.message);
+    //   onDelete();
+    //   // Add any additional logic or UI updates after successful deletion
+    // } catch (error) {
+    //   console.log("Error deleting ingredient", error);
+    //   console.log(error.message);
+    // }
   };
 
   return (

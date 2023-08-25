@@ -23,6 +23,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "Inactive",
   },
+  Timestamp: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 const User = mongoose.model("User", userSchema);

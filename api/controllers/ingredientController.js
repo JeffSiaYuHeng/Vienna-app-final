@@ -38,8 +38,8 @@ const getAllIngredients = async (req, res) => {
 // Controller to fetch a single ingredient by ID
 const getIngredientById = async (req, res) => {
   try {
-    const ingredient = await Ingredient.findById(req.params.id);
-
+    const ingredient = await Ingredient.findOne({ IngredientId: req.params.id }); // Use { _id: req.params.id } as the query
+    console.log(req.params.id);
     if (!ingredient) {
       return res.status(404).json({ message: 'Ingredient not found' });
     }

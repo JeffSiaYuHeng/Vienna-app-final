@@ -91,12 +91,12 @@ const AddRecipe = () => {
     recipeData.append("calorie", calorie); // Use creatorUser instead of creatorUserID
     recipeData.append("image", {
       uri: recipeImage,
-      type: "image/jpeg", // or photo.type
-      name: "recipe.jpg", // Adjust the file name as needed
-    }); // Add image to recipe data
-
+      type: "image/jpeg",
+      name: "recipe.jpg",
+    });// Add image to recipe data
+    console.log(recipeData);
     axios
-      .post(`http://${IP_ADDRESS}:8000/api/recipes`, recipeData, {
+      .post(`http://${IP_ADDRESS}:8000/api/recipes/create`, recipeData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -190,22 +190,22 @@ const AddRecipe = () => {
                 />
               </View>
               <View className="flex-row gap-x-2">
-              <View className="mt-1">
-                <Text>Cooking Time</Text>
-                <TextInput
-                  className="w-[80] bg-white border-solid border-gray-600 border-[1px] h-[30] items-center justify-center rounded-[5px] pl-2"
-                  value={cookingTime}
-                  onChangeText={setCookingTime}
-                />
-              </View>
-              <View className="mt-1">
-                <Text>Calorie</Text>
-                <TextInput
-                  className="w-[80] bg-white border-solid border-gray-600 border-[1px] h-[30] items-center justify-center rounded-[5px] pl-2"
-                  value={calorie}
-                  onChangeText={setCalorie}
-                />
-              </View>
+                <View className="mt-1">
+                  <Text>Cooking Time</Text>
+                  <TextInput
+                    className="w-[80] bg-white border-solid border-gray-600 border-[1px] h-[30] items-center justify-center rounded-[5px] pl-2"
+                    value={cookingTime}
+                    onChangeText={setCookingTime}
+                  />
+                </View>
+                <View className="mt-1">
+                  <Text>Calorie</Text>
+                  <TextInput
+                    className="w-[80] bg-white border-solid border-gray-600 border-[1px] h-[30] items-center justify-center rounded-[5px] pl-2"
+                    value={calorie}
+                    onChangeText={setCalorie}
+                  />
+                </View>
               </View>
             </View>
           </View>
@@ -290,6 +290,3 @@ const styles = StyleSheet.create({
 });
 
 export default AddRecipe;
-
-
-

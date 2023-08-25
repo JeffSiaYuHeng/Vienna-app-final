@@ -1,102 +1,187 @@
-// import React, { useState } from "react";
-// import {
-//   View,
-//   Text,
-//   TouchableOpacity,
-//   StyleSheet,
-//   TextInput,
-//   Alert,
-// } from "react-native";
-// import axios from "axios"; // Import axios for making API requests
-// import IP_ADDRESS from "../config"; // Adjust the path as needed
-// import { XMarkIcon } from "react-native-heroicons/solid";
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  TextInput,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  Button,
+  StyleSheet,
+} from "react-native";
+import axios from "axios";
+import { useFocusEffect, useNavigation } from "@react-navigation/native"; // Import useFocusEffect
+import IP_ADDRESS from "../config"; // Adjust the path as needed
+import SelectionToggle from "../widgets/SelectionToggle";
+import { XMarkIcon } from "react-native-heroicons/solid";
+import { Alert } from "react-native";
 
-// const AddIngredientComponents = ({ onClose, recipeId }) => {
-//   const [name, setName] = useState(""); // Change 'description' to 'name'
-//   const handleAddIngredient = () => {
-//     if (name.trim() === "") {
-//       // Change 'description' to 'name'
-//       Alert.alert("Empty Field", "Please enter the ingredient name."); // Change 'description' to 'name'
-//       return;
-//     }
+const AddIngredientComponents = ({onClose, recipeId}) => {
+  const [searchText, setSearchText] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
+  const [ingredients, setIngredients] = useState([]);
+  const [selectedIngredients, setSelectedIngredients] = useState([]);
 
-//     const newIngredient = {
-//       RecipeID: recipeId,
-//       IngredientName: name, // Change 'Description' to 'Name'
-//     };
 
-//     axios
-//       .post(`http://${IP_ADDRESS}:8000/api/ingredients`, newIngredient)
-//       .then((response) => {
-//         console.log("API Response:", response);
-//         Alert.alert("Ingredient Added", "New ingredient added successfully");
-//         setName(""); // Clear name input
-//       })
-//       .catch((error) => {
-//         if (error.response) {
-//           console.log("Adding Ingredient Failed:", error.response.data);
-//         } else if (error.message) {
-//           console.log("Adding Ingredient Failed:", error.message);
-//         } else {
-//           console.log("Adding Ingredient Failed:", error);
-//         }
 
-//         Alert.alert(
-//           "Adding Ingredient Error",
-//           "An error occurred while adding the ingredient"
-//         );
-//       });
-//   };
 
-//   return (
-//     <View className="absolute top-[150] w-screen h-screen items-center ">
-//       <View
-//         className="w-[300px] rounded-xl bg-white p-4 pt-0 gap-y-4"
-//         style={styles.cardContainer}
-//       >
-//         <TouchableOpacity
-//           onPress={onClose}
-//           className="w-full justify-end flex-row"
-//         >
-//           <XMarkIcon size={18} color="#000000" />
-//         </TouchableOpacity>
-//         <View>
-//           <Text className="font-semibold text-xl">Add Ingredient</Text>
-//           <Text className="text-sm text-gray-600">
-//             Insert the required information
-//           </Text>
-//         </View>
-//         <TextInput
-//           value={name} // Change 'description' to 'name'
-//           onChangeText={(text) => setName(text)} // Change 'description' to 'name'
-//           placeholder="Enter ingredient name" // Change 'description' to 'name'
-//           multiline
-//           numberOfLines={4} // You can adjust the number of visible lines
-//           className="w-100 bg-white border-solid border-gray-600 border-[1px] h-[90] items-center justify-center rounded-[5px] pl-2"
-//         />
-//         <TouchableOpacity
-//           onPress={handleAddIngredient}
-//           className=" w-full  bg-C87C17C h-10 items-center justify-center rounded-[5px]"
-//         >
-//           <Text className="text-white font-bold text-base">Add</Text>
-//         </TouchableOpacity>
-//       </View>
-//     </View>
-//   );
-// };
+  // Fetch ingredients from the API
+  const fetchIngredients = async () => {
+    try {
+      const response = await axios.get(
+        `http://${IP_ADDRESS}:8000/api/ingredients/`
+      );
+      setIngredients(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-// //style
-// const styles = StyleSheet.create({
-//   cardContainer: {
-//     shadowColor: "#000",
-//     shadowOffset: {
-//       width: 0,
-//       height: 2,
-//     },
-//     shadowOpacity: 0.25,
-//     shadowRadius: 3.84,
-//     elevation: 5,
-//   },
-// });
+  // Use useFocusEffect to fetch data when the component gains focus
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchIngredients();
+    }, [])
+  );
 
-// export default AddIngredientComponents;
+  // Filter ingredients based on user input
+  useEffect(() => {
+    const newData = ingredients.filter((item) =>
+      item.Name.toUpperCase().includes(searchText.toUpperCase())
+    );
+    setFilteredData(newData);
+  }, [searchText, ingredients]);
+
+  // Handle search input change
+  const handleSearch = (text) => {
+    setSearchText(text);
+  };
+
+  // Toggle ingredient selection
+  const handleToggle = (IngredientId) => {
+    if (selectedIngredients.includes(IngredientId)) {
+      setSelectedIngredients((prev) =>
+        prev.filter((item) => item !== IngredientId)
+      );
+    } else {
+      setSelectedIngredients((prev) => [...prev, IngredientId]);
+    }
+  };
+
+  // Clear all selected ingredients
+  const clearAllSelections = () => {
+    setSelectedIngredients([]);
+    // fetchIngredients();
+    // You may need to fetch additional data and update their selection state here
+  };
+
+  useEffect(() => {
+    console.log(selectedIngredients);
+  }, [selectedIngredients]); // Log the state whenever it changes
+
+
+  const handleAddRecipeIngredient = async () => {
+    if (selectedIngredients.length === 0) {
+      // Display an alert or take any other necessary action to inform the user.
+      Alert.alert(
+        "No Ingredients Selected",
+        "Please select at least one ingredient."
+      );
+      return; // Exit the function without making the API call.
+    }
+    try {
+      // Prepare an array of recipe ingredients to add
+      const recipeIngredientsToAdd = selectedIngredients.map((IngredientId) => ({
+        RecipeID: recipeId, // Replace with the actual Recipe ID
+        IngredientId,
+      }));
+  
+      console.log("Recipe Ingredients to Add:", recipeIngredientsToAdd);
+  
+      // Send a POST request to create recipe ingredients
+      const response = await axios.post(
+        `http://${IP_ADDRESS}:8000/api/recipeIngredients/create`,
+        recipeIngredientsToAdd
+      );
+  
+      console.log("Recipe Ingredient Creation Response:", response.data);
+      Alert.alert("Successful", "Your Recipe Ingredients are Added");
+    } catch (error) {
+      console.error("Recipe Ingredient Creation Error:", error);
+  
+      // Handle the error, display an alert, or perform any other necessary actions
+      Alert.alert(
+        "Recipe Ingredient Creation Error",
+        "An error occurred while creating the Recipe Ingredients"
+      );
+    }
+  };
+  
+
+
+
+
+
+
+
+  return (
+    <View className="absolute top-[100] w-screen h-screen items-center ">
+      <View
+        className="w-[300px] rounded-xl bg-white p-4 pt-0 gap-y-4"
+        style={styles.cardContainer}
+      >
+        <View className="w-full justify-between flex-row">
+          <TouchableOpacity
+            onPress={clearAllSelections} // Call the clearAllSelections function
+            className="w-[70px] self-end bg-red-400 h-8 justify-around px-3 rounded-[10px] items-center flex-row "
+          >
+            <Text className="font-bold text-sm text-white">Clear All</Text>
+          </TouchableOpacity>
+          <TouchableOpacity className="" onPress={onClose} >
+            <XMarkIcon size={18} color="#000000" />
+          </TouchableOpacity>
+        </View>
+        <View className="bg-gray-200 w-full h-9 rounded-[10px] px-2 flex-row items-center justify-between">
+          <TextInput
+            onChangeText={handleSearch}
+            value={searchText}
+            placeholder="Search Ingredient"
+          />
+        </View>
+
+        <ScrollView className="h-[300px]">
+          {filteredData.map((item) => (
+            <View key={item.IngredientId}>
+              <SelectionToggle
+                value={item.Name}
+                isSelected={selectedIngredients.includes(item.IngredientId)}
+                onToggle={() => handleToggle(item.IngredientId)}
+              />
+            </View>
+          ))}
+        </ScrollView>
+        <TouchableOpacity
+          onPress={handleAddRecipeIngredient}
+          className=" w-full  bg-C87C17C h-10 items-center justify-center rounded-[5px]"
+        >
+          <Text className="text-white font-bold text-base">Add</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
+
+export default AddIngredientComponents;
+
+//style
+const styles = StyleSheet.create({
+  cardContainer: {
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+});

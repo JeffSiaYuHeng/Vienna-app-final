@@ -25,7 +25,7 @@ const AddInstructionComponents = ({ onClose, recipeId }) => {
     };
 
     axios
-      .post(`http://${IP_ADDRESS}:8000/api/instructions`, newInstruction)
+      .post(`http://${IP_ADDRESS}:8000/api/instructions/create`, newInstruction)
       .then((response) => {
         console.log("API Response:", response);
         Alert.alert("Instruction Added", "New instruction added successfully");

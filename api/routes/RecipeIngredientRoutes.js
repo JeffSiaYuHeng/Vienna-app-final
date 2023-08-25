@@ -3,7 +3,7 @@ const router = express.Router();
 const recipeIngredientController = require("../controllers/recipeIngredientController");
 
 // Create a new recipe ingredient
-router.post("/", recipeIngredientController.createRecipeIngredient);
+router.post("/create", recipeIngredientController.createRecipeIngredient);
 
 // Get all recipe ingredients for a specific recipe
 router.get("/:recipeId", recipeIngredientController.getRecipeIngredientsByRecipeId);

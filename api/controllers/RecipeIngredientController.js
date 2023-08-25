@@ -5,33 +5,39 @@ const Ingredient = require("../models/Ingredient");
 
 // Create a new recipe ingredient
 const createRecipeIngredient = async (req, res) => {
-  const { RecipeID, IngredientId } = req.body;
   try {
-    // First, let's find the RecipeIngredient by name
-    const recipeIngredient = await Ingredient.findOne({ IngredientId });
+    const recipeIngredients = req.body;
 
-    if (!recipeIngredient) {
-      // If the recipe ingredient doesn't exist, you might want to handle this case
-      return res.status(404).json({ message: "RecipeIngredient not found" });
+    // Create an array to store the newly created recipe ingredients
+    const createdRecipeIngredients = [];
+
+    // Iterate through the recipeIngredients and create new documents
+    for (const recipeIngredientData of recipeIngredients) {
+      const { RecipeID, IngredientId } = recipeIngredientData;
+
+      // Create a new RecipeIngredient document
+      const newRecipeIngredient = new RecipeIngredient({
+        RecipeID,
+        RecipeIngredientId:IngredientId,
+      });
+
+      // Save the new recipe ingredient to the database
+      await newRecipeIngredient.save();
+
+      // Push the created recipe ingredient to the result array
+      createdRecipeIngredients.push(newRecipeIngredient);
     }
 
-    // Now, create a new RecipeIngredient using the found RecipeIngredient's ID
-    const newRecipeIngredient = new RecipeIngredient({
-      RecipeID,
-      IngredientId: Ingredient.IngredientId, // Assuming this is the correct property name
-    });
-
-    await newRecipeIngredient.save();
-
     res.status(201).json({
-      message: "Recipe Ingredient added successfully",
-      recipeIngredient: newRecipeIngredient,
+      message: "Recipe Ingredients added successfully",
+      recipeIngredients: createdRecipeIngredients,
     });
   } catch (error) {
-    console.error("Error adding Recipe Ingredient", error);
-    res.status(500).json({ message: "Error adding the Recipe Ingredient" });
+    console.error("Error adding Recipe Ingredients", error);
+    res.status(500).json({ message: "Error adding the Recipe Ingredients" });
   }
 };
+
 
 // Get all recipe ingredients for a specific recipe
 const getRecipeIngredientsByRecipeId = async (req, res) => {

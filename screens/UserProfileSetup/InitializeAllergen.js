@@ -36,7 +36,7 @@ export default function InitializeAllergen() {
         `http://${IP_ADDRESS}:8000/user/${userId}/activate`
       );
       console.log("User activated successfully:", response.data);
-      navigation.navigate("Tabs");
+      navigation.navigate("TabNavigator");
       // You can add additional logic here if needed
     } catch (error) {
       console.error("Error activating user:", error);

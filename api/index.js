@@ -47,7 +47,7 @@ const ingredientRoutes = require("./routes/ingredientRoutes"); // Adjust the pat
 app.use("/api/users", userRoutes);
 app.use("/api/recipes", recipeRoutes);
 app.use("/api/categories", categoryRoutes);
-app.use("/api/instruction", instructionRoutes);
+app.use("/api/instructions", instructionRoutes);
 app.use("/api/recipeLikes", recipeLikeRoutes); // Use recipeLikeRoutes under "/recipeLikes" endpoint
 app.use("/api/userFollow", userFollowRoutes); // Use userFollowRoutes under "/userFollow" endpoint
 app.use("/api/savedRecipes", savedRecipeRoutes); // Use savedRecipeRoutes under "/savedRecipes" endpoint

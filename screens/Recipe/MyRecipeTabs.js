@@ -111,7 +111,7 @@ const Test = () => {
       const data = await response.json();
       console.log(data.message);
       Alert.alert("Deleted", "Recipe Deleted Successful");
-      navigation.navigate("Tabs");
+      navigation.navigate("TabNavigator");
       // Add any additional logic or UI updates after successful deletion
     } catch (error) {
       console.log("Error deleting recipe", error);

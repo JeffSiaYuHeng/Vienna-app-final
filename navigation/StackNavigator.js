@@ -23,12 +23,10 @@ import AddRecipe from "../screens/Recipe/AddRecipe";
 import EditRecipe from "../screens/Recipe/EditRecipe";
 import RecipeTabs from "../screens/Recipe/RecipeTabs";
 import InstructionIngredient from "../screens/Recipe/InstructionIngredient";
-// import AddInstruction from "../screens/Recipe/AddInstruction";
-// import AddIngredient from "../screens/Recipe/AddIngredient";
 import MyRecipeTabs from "../screens/Recipe/MyRecipeTabs";
 //Settings
 import SettingScreen from "../screens/Settings/SettingScreen";
-import TestForIngreident from "../screens/TestForIngreident";
+import Test from "../screens/Test";
 
 
 
@@ -38,7 +36,7 @@ const StackNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="TestForIngreident" component={TestForIngreident} />
+      <Stack.Screen name="Test" component={Test} />
 
         {/* Authorization */}
         <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />

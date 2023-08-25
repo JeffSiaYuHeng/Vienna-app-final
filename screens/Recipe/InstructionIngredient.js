@@ -15,8 +15,8 @@ import AddInstructionRow from "../../widgets/AddInstructionRow";
 import axios from "axios";
 import IP_ADDRESS from "../../config"; // Adjust the path as needed
 import AddInstructionComponents from "../../components/AddInstructionComponents"; // Import the component
-// import AddIngredientComponents from "../../components/AddIngredientComponents";
-// import AddIngredientRow from "../../widgets/AddIngredientRow";
+import AddIngredientComponents from "../../components/AddIngredientComponents";
+import AddIngredientRow from "../../widgets/AddRecipeIngredientRow";
 
 const InstructionIngredient = ({ route }) => {
   const { recipeId } = route.params;
@@ -73,18 +73,18 @@ const InstructionIngredient = ({ route }) => {
   };
 
   useEffect(() => {
-    // const fetchIngredients = async () => {
-    //   try {
-    //     const response = await axios.get(
-    //       `http://${IP_ADDRESS}:8000/api/ingredients/${recipeId}`
-    //     );
-    //     setIngredients(response.data.Ingredients);
-    //   } catch (error) {
-    //     console.error("Error fetching Ingredients", error);
-    //   }
-    // };
+    const fetchRecipeIngredient = async () => {
+      try {
+        const response = await axios.get(
+          `http://${IP_ADDRESS}:8000/api/ingredients/${recipeId}`
+        );
+        setIngredients(response.data.Ingredients);
+      } catch (error) {
+        console.error("Error fetching Ingredients", error);
+      }
+    };
 
-    // fetchIngredients();
+    fetchIngredients();
 
     const fetchInstructions = async () => {
       try {
@@ -216,7 +216,7 @@ const InstructionIngredient = ({ route }) => {
           className="w-18 bg-C73CEE2   h-8 justify-around px-3 rounded-[5px] items-center flex-row"
           onPress={() => {
             Alert.alert("Hey", "Recipe Created Successful");
-            navigation.navigate("Tabs");
+            navigation.navigate("TabNavigator");
           }}
         >
           <Text className="font-bold text-base text-C11434E">Next</Text>

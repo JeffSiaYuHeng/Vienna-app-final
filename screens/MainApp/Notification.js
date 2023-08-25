@@ -14,7 +14,7 @@ const Notification = () => {
   const navigation = useNavigation();
 
   const HomepageGate = () => {
-    navigation.navigate("Tabs");
+    navigation.navigate("TabNavigator");
   };
 
   return (

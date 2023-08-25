@@ -1,8 +1,10 @@
 const Recipe = require("../models/Recipe");
-const RecipeCategory = require("../models/Category");
+const RecipeCategory = require("../models/RecipeCategory");
 
 // Create a new recipe
 const createRecipe = async (req, res) => {
+  console.log(req.body);
+
   const {
     title,
     description,
@@ -13,6 +15,8 @@ const createRecipe = async (req, res) => {
     calorie,
     creatorUser,
   } = req.body;
+
+
 
   try {
     const foundCategory = await RecipeCategory.findOne({ Name: category });

@@ -23,6 +23,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwt_decode from "jwt-decode";
 import IP_ADDRESS from "../../config";
 import * as ImagePicker from "expo-image-picker";
+import { ScrollView } from "react-native";
 
 const AddRecipe = () => {
   const navigation = useNavigation();
@@ -31,7 +32,6 @@ const AddRecipe = () => {
   const [cookingTime, setCookingTime] = useState("");
   const [description, setDescription] = useState("");
   const [difficultyLevel, setDifficultyLevel] = useState("");
-  const [category, setCategory] = useState("");
   const [cuisine, setCuisine] = useState("");
   const [calorie, setCalorie] = useState(""); // Added state for calorie
   const [recipeImage, setRecipeImage] = useState(""); // Added state for recipe image
@@ -71,7 +71,7 @@ const AddRecipe = () => {
       description === "" ||
       cookingTime === "" ||
       difficultyLevel === "" ||
-      category === "" ||
+      categoryInput === "" ||
       calorie === "" ||
       cuisine === "" ||
       recipeImage === "" // Check if recipeImage is empty
@@ -85,7 +85,7 @@ const AddRecipe = () => {
     recipeData.append("description", description);
     recipeData.append("cookingTime", parseInt(cookingTime)); // Convert to number
     recipeData.append("difficultyLevel", difficultyLevel);
-    recipeData.append("category", category);
+    recipeData.append("category", categoryInput);
     recipeData.append("cuisine", cuisine);
     recipeData.append("creatorUser", userId); // Use creatorUser instead of creatorUserID
     recipeData.append("calorie", calorie); // Use creatorUser instead of creatorUserID
@@ -93,7 +93,7 @@ const AddRecipe = () => {
       uri: recipeImage,
       type: "image/jpeg",
       name: "recipe.jpg",
-    });// Add image to recipe data
+    }); // Add image to recipe data
     console.log(recipeData);
     axios
       .post(`http://${IP_ADDRESS}:8000/api/recipes/create`, recipeData, {
@@ -116,7 +116,7 @@ const AddRecipe = () => {
         setDescription("");
         setCookingTime("");
         setDifficultyLevel("");
-        setCategory("");
+        setCategoryInput("");
         setCuisine("");
         setRecipeImage(""); // Reset recipe image
         setCalorie(""); // Reset recipe image
@@ -139,6 +139,30 @@ const AddRecipe = () => {
         );
       });
   };
+
+  const [suggestedCategories, setSuggestedCategories] = useState([]);
+  const [categoryInput, setCategoryInput] = useState("");
+
+  const handleCategoryInputChange = async (text) => {
+    setCategoryInput(text);
+
+    // Make an API call to your server to fetch suggested categories based on the user's input
+    try {
+      const response = await axios.get(
+        `http://${IP_ADDRESS}:8000/api/categories/searchByName?q=${text}`
+      );
+
+      // Extract the suggested categories from the response
+      const suggestedCategories = response.data.categories;
+
+      // Update the suggestedCategories state
+      setSuggestedCategories(suggestedCategories);
+    } catch (error) {
+      console.error("Error fetching suggested categories:", error);
+    }
+  };
+
+  console.log(suggestedCategories);
 
   return (
     <SafeAreaView className="flex-1 bg-CF4FFF5 ">
@@ -225,25 +249,46 @@ const AddRecipe = () => {
             <View>
               <Text>Difficulty Level</Text>
               <TextInput
-                className="w-[90] bg-white border-solid border-gray-600 border-[1px] h-[30] items-center justify-center rounded-[5px] pl-2"
+                className="w-[140] bg-white border-solid border-gray-600 border-[1px] h-[30] items-center justify-center rounded-[5px] pl-2"
                 value={difficultyLevel}
                 onChangeText={setDifficultyLevel}
               />
             </View>
             <View className="mt-1">
-              <Text>Category</Text>
-              <TextInput
-                className="w-[90] bg-white border-solid border-gray-600 border-[1px] h-[30] items-center justify-center rounded-[5px] pl-2"
-                onChangeText={setCategory}
-              />
-            </View>
-            <View className="mt-1">
               <Text>Cuisine</Text>
               <TextInput
-                className="w-[90] bg-white border-solid border-gray-600 border-[1px] h-[30] items-center justify-center rounded-[5px] pl-2"
+                className="w-[140] bg-white border-solid border-gray-600 border-[1px] h-[30] items-center justify-center rounded-[5px] pl-2"
                 onChangeText={setCuisine}
               />
             </View>
+          </View>
+          <View className="w-[300]">
+            <Text>Category</Text>
+            <TextInput
+              className="w-full bg-white border-solid border-gray-600 border-[1px] h-[30] items-center justify-center rounded-[5px] pl-2"
+              onChangeText={handleCategoryInputChange}
+              value={categoryInput}
+            />
+            {/* Display the suggested categories */}
+            {suggestedCategories.length > 0 && (
+              <ScrollView className="h-[200] w-100">
+                {suggestedCategories.map((category, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    onPress={() => {
+                      // When a suggested category is selected, update the category input field
+                      setCategoryInput(category);
+                      // Clear the suggested categories list
+                      setSuggestedCategories([]);
+                    }}
+                  >
+                    <Text className="p-1 rounded-xl bg-gray-100 my-1">
+                      {category}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            )}
           </View>
         </View>
       </View>

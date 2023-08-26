@@ -32,7 +32,7 @@ const deleteUserFollow = async (req, res) => {
     });
 
     if (deleteResult.deletedCount === 0) {
-      return res.status(404).json({ message: "User follow not found" });
+      return res.status(200).json({ message: "User follow not found" });
     }
 
     res.status(200).json({ message: "User follow deleted successfully" });

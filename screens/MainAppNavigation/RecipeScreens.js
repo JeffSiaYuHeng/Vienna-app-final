@@ -23,6 +23,8 @@ export default function RecipeScreens() {
   const navigation = useNavigation();
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchText, setSearchText] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
 
   useEffect(() => {
     // Fetch recipes from the database
@@ -49,6 +51,13 @@ export default function RecipeScreens() {
     });
     return refreshPage;
   }, []);
+
+  useEffect(() => {
+    const newData = recipes.filter((item) =>
+      item.title.toUpperCase().includes(searchText.toUpperCase())
+    );
+    setFilteredData(newData);
+  }, [searchText, recipes]);
 
   if (loading) {
     return (
@@ -82,6 +91,8 @@ export default function RecipeScreens() {
         <View className="w-100 bg-white border-solid border-CC5ECBE border-2 h-10 justify-around items-center flex-row rounded-[5px] mb-5">
           <TextInput
             placeholder="Search Recipe from your creation"
+            onChangeText={setSearchText}
+            value={searchText}
             className="pl-2"
           />
           <MagnifyingGlassIcon size={25} color="#B4B4B4" />
@@ -94,7 +105,7 @@ export default function RecipeScreens() {
           }}
         >
           {recipes.length > 0 ? (
-            recipes.map((recipe, index) => (
+            filteredData.map((recipe, index) => (
               <MyRecipeCard
                 key={recipe._id} // This should be category._id
                 RecipeID={recipe._id} // This should be category._i

@@ -10,7 +10,6 @@ export default function UserProfileRow({
   username,
 }) {
   const navigation = useNavigation();
-
   return (
     <View
       className="w-full h-12 bg-white rounded-[5] mt-3 px-4 flex-row items-center "

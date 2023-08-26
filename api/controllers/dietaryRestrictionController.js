@@ -19,6 +19,26 @@ const getAllDietaryRestrictions = async (req, res) => {
   }
 };
 
+// Get a dietary restriction by its ID
+const getDietaryRestrictionById = async (req, res) => {
+  try {
+    const dietaryRestrictionId = req.params.id;
+    // Find the dietary restriction by ID
+    const dietaryRestriction = await DietaryRestriction.findOne({DietaryRestrictionId:dietaryRestrictionId});
+
+    if (!dietaryRestriction) {
+      return res.status(404).json({ message: "Dietary Restriction not found" });
+    }
+
+    // Return the dietary restriction
+    res.status(200).json({ dietaryRestriction });
+  } catch (error) {
+    console.error("Error fetching Dietary Restriction by ID", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 module.exports = {
   getAllDietaryRestrictions,
+  getDietaryRestrictionById, // Add this line to export the new function
 };

@@ -1,285 +1,338 @@
-  import React, { useEffect, useState } from "react";
-  import {
-    View,
-    TextInput,
-    ScrollView,
-    Text,
-    TouchableOpacity,
-    Button,
-    FlatList,
-    StyleSheet,
-    SafeAreaView,
-  } from "react-native";
-  import axios from "axios";
-  import { useFocusEffect, useNavigation } from "@react-navigation/native"; // Import useFocusEffect
-  import IP_ADDRESS from "../config"; // Adjust the path as needed
-  import SelectionToggle from "../widgets/SelectionToggle";
-  import { XMarkIcon, PlusIcon } from "react-native-heroicons/solid";
-  import { LinearGradient } from "expo-linear-gradient";
-import SearchByIngredientSmallBox from "../widgets/SearchByIngredientSmallBox";
-import { Alert } from "react-native";
-import RecipeCard from "../widgets/RecipeCard";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  TouchableOpacity,
+  StyleSheet,
+  TextInput,
+  Alert,
+  Image,
+} from "react-native";
+import React, { useState, useEffect } from "react";
+import { LinearGradient } from "expo-linear-gradient";
+import {
+  CameraIcon,
+  PlayIcon,
+  PlayPauseIcon,
+  PlusIcon,
+  XMarkIcon,
+} from "react-native-heroicons/solid";
+import { useNavigation } from "@react-navigation/native";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import jwt_decode from "jwt-decode";
+import IP_ADDRESS from "../config";
+import * as ImagePicker from "expo-image-picker";
+import { ScrollView } from "react-native";
 
-  const IngredientSearchScreen = () => {
-    const [ingredientName, setIngredientName] = useState("");
-    const [recipes, setRecipes] = useState([]);
-    const [searching, setSearching] = useState(false); // To display a loading indicator
-    const [searchText, setSearchText] = useState("");
-    const [filteredData, setFilteredData] = useState([]);
+const AddRecipe = () => {
+  const navigation = useNavigation();
+  const [userId, setUserId] = useState("");
+  const [title, setTitle] = useState("");
+  const [cookingTime, setCookingTime] = useState("");
+  const [description, setDescription] = useState("");
+  const [difficultyLevel, setDifficultyLevel] = useState("");
+  const [category, setCategory] = useState("");
+  const [cuisine, setCuisine] = useState("");
+  const [calorie, setCalorie] = useState(""); // Added state for calorie
+  const [recipeImage, setRecipeImage] = useState(""); // Added state for recipe image
 
-    const [ingredients, setIngredients] = useState([]);
-    const [selectedIngredients, setSelectedIngredients] = useState([]);
-    const [isAddIngredientVisible, setIsAddIngredientVisible] = useState(false);
-    const navigation = useNavigation();
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
 
-    const HomepageGate = () => {
-      navigation.navigate("TabNavigator");
-    };
+    if (!result.canceled) {
+      // Use "canceled" instead of "cancelled"
+      setRecipeImage(result.assets[0].uri); // Access the uri from the "assets" array
+    }
+  };
 
-    // Function to toggle the visibility of the "Add Ingredient" section
-    const toggleAddIngredient = () => {
-      setIsAddIngredientVisible(!isAddIngredientVisible);
-    };
-    // Fetch ingredients from the API
-    const fetchIngredients = async () => {
+  useEffect(() => {
+    const fetchUserId = async () => {
       try {
-        const response = await axios.get(
-          `http://${IP_ADDRESS}:8000/api/ingredients/`
-        );
-        setIngredients(response.data);
+        const token = await AsyncStorage.getItem("authToken");
+        const decodedToken = jwt_decode(token);
+        const userId = decodedToken.userId;
+        setUserId(userId);
       } catch (error) {
-        console.error(error);
+        console.log("Error fetching userId", error);
       }
     };
 
-    // Use useFocusEffect to fetch data when the component gains focus
-    useFocusEffect(
-      React.useCallback(() => {
-        fetchIngredients();
-      }, [])
-    );
+    fetchUserId();
+  }, []);
 
-    // Filter ingredients based on user input
-    useEffect(() => {
-      const newData = ingredients.filter((item) =>
-        item.Name.toUpperCase().includes(searchText.toUpperCase())
-      );
-      setFilteredData(newData);
-    }, [searchText, ingredients]);
+  const handleNextPress = () => {
+    if (
+      title.trim() === "" ||
+      description === "" ||
+      cookingTime === "" ||
+      difficultyLevel === "" ||
+      category === "" ||
+      calorie === "" ||
+      cuisine === "" ||
+      recipeImage === "" // Check if recipeImage is empty
+    ) {
+      Alert.alert("Empty Fields", "Please fill in all required fields.");
+      return;
+    }
 
-    // Handle search input change
-    const handleSearch = (text) => {
-      setSearchText(text);
-    };
-
-    // Toggle ingredient selection
-    const handleToggle = (IngredientId) => {
-      if (selectedIngredients.includes(IngredientId)) {
-        setSelectedIngredients((prev) =>
-          prev.filter((item) => item !== IngredientId)
-        );
-      } else {
-        setSelectedIngredients((prev) => [...prev, IngredientId]);
-      }
-    };
-
-    // Clear all selected ingredients
-    const clearAllSelections = () => {
-      setSelectedIngredients([]);
-      setRecipes([]);
-      // fetchIngredients();
-      // You may need to fetch additional data and update their selection state here
-    };
-
-    useEffect(() => {
-      console.log(selectedIngredients);
-    }, [selectedIngredients]); // Log the state whenever it changes
-
-    const searchRecipes = async () => {
-
-      if (selectedIngredients.length === 0) {
-        Alert.alert("Error", "At least select one Ingredient");
-        return; // Exit the function early
-      }
-
-
-
-      try {
-        setSearching(true); // Start searching, show a loading indicator
-    
-        const response = await axios.post(
-          `http://${IP_ADDRESS}:8000/api/ingredientSearch/search`,
-          { ingredientIds: selectedIngredients }, // Send the selected ingredient IDs as the request body
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-    
-        if (!response.data.recipes) {
-          throw new Error("Ingredient not found");
+    const recipeData = new FormData(); // Create a new FormData object
+    recipeData.append("title", title);
+    recipeData.append("description", description);
+    recipeData.append("cookingTime", parseInt(cookingTime)); // Convert to number
+    recipeData.append("difficultyLevel", difficultyLevel);
+    recipeData.append("category", category);
+    recipeData.append("cuisine", cuisine);
+    recipeData.append("creatorUser", userId); // Use creatorUser instead of creatorUserID
+    recipeData.append("calorie", calorie); // Use creatorUser instead of creatorUserID
+    recipeData.append("image", {
+      uri: recipeImage,
+      type: "image/jpeg",
+      name: "recipe.jpg",
+    }); // Add image to recipe data
+    console.log(recipeData);
+    axios
+      .post(`http://${IP_ADDRESS}:8000/api/recipes/create`, recipeData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      // After successful recipe addition in handleNextPress
+      .then((response) => {
+        console.log("API Response:", response);
+        const recipeId = response.data.recipe._id; // Access the recipeId from the correct path in the response
+        console.log("Recipe ID:", recipeId);
+        if (!recipeId) {
+          // Check if recipeId is undefined
+          console.log("Error: Recipe ID is undefined");
+          return;
         }
-    
-        setRecipes(response.data.recipes);
-        console.log(recipes);
-      } catch (error) {
-        console.error(error);
-        // Handle error appropriately (e.g., show an error message)
-      } finally {
-        setSearching(false); // Finish searching, hide the loading indicator
-      }
-    };
-    
-    return (
-      <SafeAreaView className="flex-1 bg-CF4FFF5 ">
-        <LinearGradient
-          colors={["#7caf75", "#6db29a"]} // Adjust the gradient colors as needed
-          start={[0, 0]} // Starting point (optional, default is [0,0])
-          end={[1, 0]} // Ending point (optional, default is [1,0])
-          className="flex p-4 pt-10 justify-between flex-row w-full h-[80]  items-center"
+        Alert.alert("Recipe Added", "Your recipe has been added successfully");
+        setTitle("");
+        setDescription("");
+        setCookingTime("");
+        setDifficultyLevel("");
+        setCategory("");
+        setCuisine("");
+        setRecipeImage(""); // Reset recipe image
+        setCalorie(""); // Reset recipe image
+
+        navigation.navigate("InstructionIngredient", { recipeId }); // Pass recipeId as a parameter
+      })
+
+      .catch((error) => {
+        if (error.response) {
+          console.log("Recipe Addition Failed:", error.response.data);
+        } else if (error.message) {
+          console.log("Recipe Addition Failed:", error.message);
+        } else {
+          console.log("Recipe Addition Failed:", error);
+        }
+
+        Alert.alert(
+          "Recipe Addition Error",
+          "An error occurred while adding the recipe"
+        );
+      });
+  };
+
+  const [suggestedCategories, setSuggestedCategories] = useState([]);
+  const [categoryInput, setCategoryInput] = useState("");
+
+  const handleCategoryInputChange = async (text) => {
+    setCategoryInput(text);
+
+    // Make an API call to your server to fetch suggested categories based on the user's input
+    try {
+      const response = await axios.get(
+        `http://${IP_ADDRESS}:8000/api/categories/searchByName?q=${text}`
+      );
+
+      // Extract the suggested categories from the response
+      const suggestedCategories = response.data.categories;
+
+      // Update the suggestedCategories state
+      setSuggestedCategories(suggestedCategories);
+    } catch (error) {
+      console.error("Error fetching suggested categories:", error);
+    }
+  };
+
+  console.log(suggestedCategories);
+
+  return (
+    <SafeAreaView className="flex-1 bg-CF4FFF5 ">
+      <LinearGradient
+        colors={["#7caf75", "#6db29a"]} // Adjust the gradient colors as needed
+        start={[0, 0]} // Starting point (optional, default is [0,0])
+        end={[1, 0]} // Ending point (optional, default is [1,0])
+        className="flex p-4 pt-10 justify-center flex-row w-full h-[80]  items-center"
+      >
+        <Text className="text-lg font-bold text-white">Create a Recipe</Text>
+      </LinearGradient>
+      <View className="w-100 p-2 pt-4 ">
+        <View
+          className="w-100 rounded-xl bg-white items-center pt-4 pb-4 gap-y-2"
+          style={styles.cardContainer}
         >
-          <View></View>
-          <Text className="text-lg font-bold text-white">
-            {"Search By Ingredient"}
-          </Text>
-          <TouchableOpacity onPress={HomepageGate}>
-            <XMarkIcon size={25} color="#FFFFFF" />
-          </TouchableOpacity>
-        </LinearGradient>
+          <View className="flex-row">
+            <View className="w-[100] h-[100] bg-gray-300 justify-center items-center rounded-[10px]">
+              <TouchableOpacity
+                onPress={pickImage}
+                style={{
+                  width: 100,
+                  height: 100,
+                  backgroundColor: "#ddd",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderRadius: 10,
+                }}
+              >
+                {recipeImage ? (
+                  <Image
+                    source={{ uri: recipeImage }}
+                    style={{ width: 100, height: 100, borderRadius: 10 }}
+                  />
+                ) : (
+                  <CameraIcon size={25} color="#FFFFFF" />
+                )}
+              </TouchableOpacity>
+            </View>
 
-        <View className="w-100 p-4 h-screen  ">
-
-          <View className="flex-row justify-between  mb-4">
-          <TouchableOpacity
-            onPress={toggleAddIngredient}
-            className=" items-center flex-row justify-between px-3  h-8   bg-CC5ECBE rounded-lg"
-          >
-            <Text className="font-bold text-C2B5708  text-sm">Add Ingredient</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={clearAllSelections} // Call the clearAllSelections function
-            className=" w-[70px] bg-red-400 h-8 justify-around px-3 rounded-lg items-center flex-row "
-          >
-            <Text className="font-bold text-sm text-white">Clear All</Text>
-          </TouchableOpacity>
-  </View>
-
-
-
-          <View  style={styles.cardContainer} className="w-100 bg-white h-32 rounded-xl flex-row flex-wrap p-4">
-
-          {selectedIngredients.length > 0 ? (
-            selectedIngredients.map((selectedIngredient) => (
-              <SearchByIngredientSmallBox
-                key={selectedIngredient._id} // Use a unique identifier from your data here
-                RecipeIngredientId={selectedIngredient}
-              />
-            ))
-          ) : (
-            <Text className="ml-2">No ingredients Selected.</Text>
-          )}
-
-
-          </View>
-
-
-          <View className="w-100 items-center justify-center pt-2">
-          <TouchableOpacity
-            onPress={searchRecipes}
-            className=" items-center flex-row justify-between px-3  h-8  bg-CC5ECBE rounded-lg"
-          >
-            <Text className="font-bold text-C2B5708  text-sm">Search</Text>
-          </TouchableOpacity>
-                    <Text className="font-bold text-C2B5708 text-lg py-2">
-            Match's Recipes
-          </Text>
-        </View>
-        <ScrollView
-          className="p-5"
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{
-            paddingBottom: 10,
-            marginBottom: 30,
-          }}
-        >
-                  {recipes.length > 0 ? (
-          recipes.map((recipe, index) => (
-            <RecipeCard
-              key={recipe._id} // This should be category._id
-              RecipeID={recipe._id} // This should be category._i
-              imgUrl={recipe.image}
-              Title={recipe.title || "Unknown Title"}
-              date={recipe.createdAt}
-              Description={recipe.description || "No description available"}
-              rates={5}
-              Calorie={recipe.calorie}
-              CreatorID={recipe.creatorUser}
-              Recipe_View={150}
-              Cooking_Time={recipe.cookingTime || "Unknown Time"}
-              Difficulty_Level={recipe.difficultyLevel || "Unknown Level"}
-              Like={15}
-            />
-          ))
-        ) : (
-          <View className="w-100 items-center">
-            <Text>No Recipe found.</Text>
-          </View>
-        )}
-                </ScrollView>
-
-        </View>
-
-        {isAddIngredientVisible && (
-          <View className="absolute top-[100] w-screen h-screen items-center ">
-            <View
-              className="w-[300px] rounded-xl bg-white p-4 pt-0 gap-y-4"
-              style={styles.cardContainer}
-            >
-              <View className="w-full justify-between flex-row">
-                <View></View>
-                <TouchableOpacity className="" onPress={toggleAddIngredient}>
-                  <XMarkIcon size={18} color="#000000" />
-                </TouchableOpacity>
-              </View>
-              <View className="bg-gray-200 w-full h-9 rounded-[10px] px-2 flex-row items-center justify-between">
+            {/* Text input for the Title and Cooking Time */}
+            <View className="ml-4">
+              <View>
+                <Text>Recipe Title</Text>
                 <TextInput
-                  onChangeText={handleSearch}
-                  value={searchText}
-                  placeholder="Search Ingredient"
+                  className="w-[200] bg-white border-solid border-gray-600 border-[1px] h-[30] items-center justify-center rounded-[5px] pl-2"
+                  value={title}
+                  onChangeText={setTitle}
                 />
               </View>
-
-              <ScrollView className="h-[300px]">
-                {filteredData.map((item) => (
-                  <View key={item.IngredientId}>
-                    <SelectionToggle
-                      value={item.Name}
-                      isSelected={selectedIngredients.includes(item.IngredientId)}
-                      onToggle={() => handleToggle(item.IngredientId)}
-                    />
-                  </View>
-                ))}
-              </ScrollView>
+              <View className="flex-row gap-x-2">
+                <View className="mt-1">
+                  <Text>Cooking Time</Text>
+                  <TextInput
+                    className="w-[80] bg-white border-solid border-gray-600 border-[1px] h-[30] items-center justify-center rounded-[5px] pl-2"
+                    value={cookingTime}
+                    onChangeText={setCookingTime}
+                  />
+                </View>
+                <View className="mt-1">
+                  <Text>Calorie</Text>
+                  <TextInput
+                    className="w-[80] bg-white border-solid border-gray-600 border-[1px] h-[30] items-center justify-center rounded-[5px] pl-2"
+                    value={calorie}
+                    onChangeText={setCalorie}
+                  />
+                </View>
+              </View>
             </View>
           </View>
-        )}
-      </SafeAreaView>
-    );
-  };
-  //style
-  const styles = StyleSheet.create({
-    cardContainer: {
-      shadowColor: "#000",
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 3.84,
-      elevation: 5,
-    },
-  });
 
-  export default IngredientSearchScreen;
+          <View className="w-[300]">
+            <Text>Recipe Description</Text>
+            <TextInput
+              multiline
+              numberOfLines={4} // You can adjust the number of visible lines
+              className="w-100 bg-white border-solid border-gray-600 border-[1px] h-[90] items-center justify-center rounded-[5px] pl-2"
+              value={description}
+              onChangeText={setDescription}
+            />
+          </View>
+
+          <View className="w-300 flex-row gap-4">
+            <View>
+              <Text>Difficulty Level</Text>
+              <TextInput
+                className="w-[140] bg-white border-solid border-gray-600 border-[1px] h-[30] items-center justify-center rounded-[5px] pl-2"
+                value={difficultyLevel}
+                onChangeText={setDifficultyLevel}
+              />
+            </View>
+            <View className="mt-1">
+              <Text>Cuisine</Text>
+              <TextInput
+                className="w-[140] bg-white border-solid border-gray-600 border-[1px] h-[30] items-center justify-center rounded-[5px] pl-2"
+                onChangeText={setCuisine}
+              />
+            </View>
+          </View>
+          <View className="w-[300]">
+            <Text>Category</Text>
+            <TextInput
+              className="w-full bg-white border-solid border-gray-600 border-[1px] h-[30] items-center justify-center rounded-[5px] pl-2"
+              onChangeText={handleCategoryInputChange}
+              value={categoryInput}
+            />
+            {/* Display the suggested categories */}
+            {suggestedCategories.length > 0 && (
+              <ScrollView className="h-[200] w-100">
+                {suggestedCategories.map((category, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    onPress={() => {
+                      // When a suggested category is selected, update the category input field
+                      setCategoryInput(category);
+                      // Clear the suggested categories list
+                      setSuggestedCategories([]);
+                    }}
+                  >
+                    <Text className="p-1 rounded-xl bg-gray-100 my-1">
+                      {category}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            )}
+          </View>
+        </View>
+      </View>
+
+      <View className="absolute bottom-4 left-4 ">
+        <TouchableOpacity
+          onPress={navigation.goBack}
+          className="w-18 bg-CEEAEA0 h-8 justify-around px-3 rounded-[5px] items-center flex-row"
+        >
+          <PlayIcon
+            size={18}
+            color="#642323"
+            style={{ transform: [{ scaleX: -1 }] }}
+          />
+          <Text className="font-bold text-base text-C642323">Back</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View className="absolute bottom-4 right-4 ">
+        <TouchableOpacity
+          onPress={handleNextPress}
+          className="w-18 bg-C73CEE2   h-8 justify-around px-3 rounded-[5px] items-center flex-row"
+        >
+          <Text className="font-bold text-base text-C11434E">Next</Text>
+          <PlayIcon size={18} color="#11434E" />
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
+  );
+};
+
+//style
+const styles = StyleSheet.create({
+  cardContainer: {
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+});
+
+export default AddRecipe;

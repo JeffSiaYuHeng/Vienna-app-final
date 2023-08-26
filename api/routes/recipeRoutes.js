@@ -18,6 +18,12 @@ const storage = multer.diskStorage({
 // Define your recipe routes here
 const upload = multer({ storage: storage });
 
+
+
+router.get("/home", recipeController.getAllRecipes);
+router.get("/find/:recipeId", recipeController.getRecipeById);
+router.get("/user/:userId", recipeController.getRecipesByUserId);
+
 router.post("/create", (req, res, next) => {
   upload.single("image")(req, res, (err) => {
     if (err) {
@@ -28,10 +34,19 @@ router.post("/create", (req, res, next) => {
     // Continue to your createRecipe controller
     recipeController.createRecipe(req, res);
   });
-});router.put("/:recipeId", recipeController.updateRecipe);
-router.get("/home", recipeController.getAllRecipes);
-router.get("/find/:recipeId", recipeController.getRecipeById);
-router.get("/user/:userId", recipeController.getRecipesByUserId);
+});
+router.put("/updateRecipe/:recipeId", (req, res, next) => {
+  upload.single("image")(req, res, (err) => {
+    if (err) {
+      // Handle Multer-related errors
+      console.error("Multer Error:", err);
+      return res.status(400).json({ message: "File upload failed" });
+    }
+    // Continue to your createRecipe controller
+    recipeController.updateRecipe(req, res);
+  });
+});
+
 router.delete("/delete/:recipeId", recipeController.deleteRecipe);
 
 module.exports = router;

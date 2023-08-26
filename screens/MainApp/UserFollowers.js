@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import IP_ADDRESS from "../../config"; // Adjust the path as needed
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwt_decode from "jwt-decode";
@@ -18,6 +18,12 @@ import FollowersFollowingRow from "../../widgets/FollowersFollowingRow";
 import { FlatList } from "react-native";
 
 export default function UserFollowers() {
+  const {
+    params: { userId },
+  } = useRoute();
+
+  const fetchedUserId = userId;
+
   const navigation = useNavigation();
   const [followers, setFollower] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -30,7 +36,7 @@ export default function UserFollowers() {
         const userId = decodedToken.userId;
 
         const response = await axios.get(
-          `http://${IP_ADDRESS}:8000/api/userFollow/follower?userId=${userId}`
+          `http://${IP_ADDRESS}:8000/api/userFollow/follower?userId=${fetchedUserId}`
         );
 
         if (response.data) {

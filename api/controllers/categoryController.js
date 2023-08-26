@@ -67,9 +67,35 @@ const getCategoryById = async (req, res) => {
   }
 };
 
+
+
+const SearchByName = async (req, res) => {
+  try {
+    const { q } = req.query;
+
+    // Use a regular expression to perform a case-insensitive search for categories that match the user's input
+    const categories = await Category.find({
+      Name: { $regex: q, $options: "i" },
+    });
+
+    // Extract category names from the query results
+    const categoryNames = categories.map((category) => category.Name);
+
+    res.json({ categories: categoryNames });
+  } catch (error) {
+    console.error("Error fetching suggested categories:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+module.exports = {
+  SearchByName,
+};
+
 module.exports = {
   createCategory,
   getAllCategories,
   deleteCategory,
   getCategoryById,
+  SearchByName,
 };

@@ -24,6 +24,14 @@ const SettingScreen = () => {
     } 
   }
 
+  const goUserDietaryRestriction = () => {
+    navigation.navigate("EditUserDietaryRestriction");
+  };
+
+  const goEditUserAllergen = () => {
+    navigation.navigate("EditUserAllergen");
+  };
+
   const navigation = useNavigation();
   return (
     <SafeAreaView className="flex-1 bg-CF4FFF5 ">
@@ -45,13 +53,24 @@ const SettingScreen = () => {
           className="w-100 rounded-xl bg-white items-center pt-4 pb-4 gap-y-2"
           style={styles.cardContainer}
         >
-          <TouchableOpacity className="w-[320] bg-white border-solid border-gray-400 border-2 h-10 pl-4 justify-center rounded-[5px]">
-            <Text className="text-gray-400 font-bold">Setting Items</Text>
+          <TouchableOpacity
+            onPress={goUserDietaryRestriction}
+            className="w-[320] bg-white border-solid border-gray-400 border-2 h-10 pl-4 justify-center rounded-[5px]"
+          >
+            <Text className="text-gray-400 font-bold">
+              Edit Dietary Restriction
+            </Text>
           </TouchableOpacity>
-          <TouchableOpacity className="w-[320] bg-white border-solid border-gray-400 border-2 h-10 pl-4 justify-center rounded-[5px]">
-            <Text className="text-gray-400 font-bold">Setting Items</Text>
+          <TouchableOpacity
+            onPress={goEditUserAllergen}
+            className="w-[320] bg-white border-solid border-gray-400 border-2 h-10 pl-4 justify-center rounded-[5px]"
+          >
+            <Text className="text-gray-400 font-bold">Edit User Allergen</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={handleLogout} className="w-[320] border-solid border-red-500 bg-red-500 border-2 h-10 pl-4 justify-center rounded-[5px]">
+          <TouchableOpacity
+            onPress={handleLogout}
+            className="w-[320] border-solid border-red-500 bg-red-500 border-2 h-10 pl-4 justify-center rounded-[5px]"
+          >
             <Text className="text-white font-bold">Logout</Text>
           </TouchableOpacity>
         </View>

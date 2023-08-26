@@ -5,11 +5,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import WelcomeScreen from "../screens/Authentication/WelcomeScreen";
 import Login from "../screens/Authentication/Login";
 import Register from "../screens/Authentication/Register";
-//  User Profile Setup
-import EditProfile from "../screens/UserProfileSetup/EditProfile";
-import InitializeAllergen from "../screens/UserProfileSetup/InitializeAllergen";
-import InitializeDietaryRestriction from "../screens/UserProfileSetup/InitializeDietaryRestriction";
-import InitialUserProfile from "../screens/UserProfileSetup/InitialUserProfile";
+
 //MainApp
 import Notification from "../screens/MainApp/Notification";
 import OthersProfile from "../screens/MainApp/OthersProfile";
@@ -30,8 +26,14 @@ import MyRecipeTabs from "../screens/Recipe/MyRecipeTabs";
 //Settings
 import SettingScreen from "../screens/Settings/SettingScreen";
 import Test from "../screens/Test";
-
-
+//UserProfileAndSocial
+import EditUserDietaryRestriction from "../screens/UserProfileAndSocial/EditUserDietaryRestriction";
+import EditUserAllergen from "../screens/UserProfileAndSocial/EditUserAllergen";
+//  User Profile Setup
+import EditProfile from "../screens/UserProfileSetup/EditProfile";
+import InitializeAllergen from "../screens/UserProfileSetup/InitializeAllergen";
+import InitializeDietaryRestriction from "../screens/UserProfileSetup/InitializeDietaryRestriction";
+import InitialUserProfile from "../screens/UserProfileSetup/InitialUserProfile";
 
 const Stack = createNativeStackNavigator();
 
@@ -68,8 +70,14 @@ const StackNavigator = () => {
         <Stack.Screen name="UserFollowed" component={UserFollowed} />
         <Stack.Screen name="UserFollowers" component={UserFollowers} />
         <Stack.Screen name="UserLikedRecipe" component={UserLikedRecipe} />
-        <Stack.Screen name="SearchByIngredient" component={SearchByIngredient} />
-        <Stack.Screen name="SearchRecipeByName" component={SearchRecipeByName} />
+        <Stack.Screen
+          name="SearchByIngredient"
+          component={SearchByIngredient}
+        />
+        <Stack.Screen
+          name="SearchRecipeByName"
+          component={SearchRecipeByName}
+        />
 
         {/* MainApp END */}
 
@@ -84,8 +92,6 @@ const StackNavigator = () => {
           name="InstructionIngredient"
           component={InstructionIngredient}
         />
-        {/* <Stack.Screen name="AddInstruction" component={AddInstruction} />
-        <Stack.Screen name="AddIngredient" component={AddIngredient} /> */}
         <Stack.Screen name="MyRecipeTabs" component={MyRecipeTabs} />
         {/* Recipe END*/}
 
@@ -93,6 +99,15 @@ const StackNavigator = () => {
         <Stack.Screen name="SettingScreen" component={SettingScreen} />
 
         {/* Setting END */}
+
+        {/* UserProfileAndSocial */}
+        <Stack.Screen
+          name="EditUserDietaryRestriction"
+          component={EditUserDietaryRestriction}
+        />
+        <Stack.Screen name="EditUserAllergen" component={EditUserAllergen} />
+
+        {/* UserProfileAndSocial */}
       </Stack.Navigator>
     </NavigationContainer>
   );

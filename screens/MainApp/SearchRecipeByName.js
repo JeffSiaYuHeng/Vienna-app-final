@@ -65,8 +65,8 @@ const SearchRecipeByName = () => {
         </TouchableOpacity>
       </LinearGradient>
       <View className="w-100 p-2 pt-4 ">
-        <View className="w-100">
-          <View className="bg-gray-200 w-100 h-9 rounded-[10px] px-2 flex-row items-center justify-between">
+        <View className="w-100 p-2">
+          <View className="bg-gray-200 w-100 h-9 rounded-[10px] px-4 flex-row items-center justify-between">
             <TextInput
               onChangeText={setSearchText}
               value={searchText}
@@ -77,39 +77,38 @@ const SearchRecipeByName = () => {
         </View>
 
         <ScrollView
-          className="p-5"
+          className="p-2"
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{
-            paddingBottom: 10,
+            paddingBottom: 70,
             marginBottom: 30,
           }}
         >
           {recipes.length > 0 ? (
-          filteredData.map((recipe, index) => (
-            <RecipeCard
-              key={recipe._id} // This should be category._id
-              RecipeID={recipe._id} // This should be category._i
-              imgUrl={recipe.image}
-              Title={recipe.title || "Unknown Title"}
-              date={recipe.createdAt}
-              Description={recipe.description || "No description available"}
-              rates={5}
-              Calorie={recipe.calorie}
-              CreatorID={recipe.creatorUser}
-              Recipe_View={150}
-              Cooking_Time={recipe.cookingTime || "Unknown Time"}
-              Difficulty_Level={recipe.difficultyLevel || "Unknown Level"}
-              Like={15}
-            />
-          ))
-        ) : (
-          <View className="w-100 items-center">
-            <Text>No Recipe found.</Text>
-          </View>
-        )}
-
+            filteredData.map((recipe, index) => (
+              <RecipeCard
+                key={recipe._id} // This should be category._id
+                RecipeID={recipe._id} // This should be category._i
+                imgUrl={recipe.image}
+                Title={recipe.title || "Unknown Title"}
+                date={recipe.createdAt}
+                Description={recipe.description || "No description available"}
+                rates={5}
+                Calorie={recipe.calorie}
+                CreatorID={recipe.creatorUser}
+                Recipe_View={150}
+                Cooking_Time={recipe.cookingTime || "Unknown Time"}
+                Difficulty_Level={recipe.difficultyLevel || "Unknown Level"}
+                Like={15}
+              />
+            ))
+          ) : (
+            <View className="w-100 items-center">
+              <Text>No Recipe found.</Text>
+            </View>
+          )}
         </ScrollView>
-        </View>
+      </View>
     </SafeAreaView>
   );
 };

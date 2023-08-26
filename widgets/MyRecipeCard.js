@@ -5,26 +5,7 @@ import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import IP_ADDRESS from "../config"; // Adjust the path as needed
 import RecipeIngredientSmallBox from "./RecipeIngredientSmallBox";
-
-//rating system
-export function RatingIcon({ rating }) {
-  const renderStars = () => {
-    const stars = [];
-    for (let i = 0; i < rating; i++) {
-      stars.push(
-        <StarIcon
-          key={i}
-          style={{ marginRight: 2 }}
-          color="#87C17C"
-          size={15}
-        />
-      );
-    }
-    return stars;
-  };
-
-  return <View className="flex-row pl-1">{renderStars()}</View>;
-}
+import { RenderStartWidgets } from "./RenderStartWidgets";
 
 //main part
 export default function MyRecipeCard({
@@ -147,7 +128,7 @@ export default function MyRecipeCard({
             </View>
           </View>
 
-          <RatingIcon rating={5} />
+          <RenderStartWidgets recipeId={RecipeID} />
           <View className="flex-row items-center justify-center px-2 h-5 w-20 ml-1 mt-1 bg-CEEDDA0 rounded">
             <Text className="text-C645623 text-xxs font-bold pt-1">est.</Text>
             <FireIcon size={15} color="#6D4731" />

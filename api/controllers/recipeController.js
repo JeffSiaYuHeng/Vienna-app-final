@@ -3,8 +3,6 @@ const RecipeCategory = require("../models/RecipeCategory");
 
 // Create a new recipe
 const createRecipe = async (req, res) => {
-  console.log(req.body);
-
   const {
     title,
     description,
@@ -15,8 +13,6 @@ const createRecipe = async (req, res) => {
     calorie,
     creatorUser,
   } = req.body;
-
-
 
   try {
     const foundCategory = await RecipeCategory.findOne({ Name: category });
@@ -48,7 +44,6 @@ const createRecipe = async (req, res) => {
   }
 };
 
-// Update a recipe
 const updateRecipe = async (req, res) => {
   const recipeId = req.params.recipeId;
   const {
@@ -58,8 +53,8 @@ const updateRecipe = async (req, res) => {
     difficultyLevel,
     category,
     cuisine,
-    creatorUser,
     calorie,
+    creatorUser,
   } = req.body;
 
   try {
@@ -70,24 +65,38 @@ const updateRecipe = async (req, res) => {
       return res.status(404).json({ message: "Recipe not found" });
     }
 
+    // Find the category
+    const foundCategory = await RecipeCategory.findOne({ Name: category });
+
+    if (!foundCategory) {
+      return res.status(400).json({ message: "Category not found" });
+    }
+
+    // Update the recipe properties
+    recipe.title = title;
+    recipe.description = description;
+    recipe.cookingTime = cookingTime;
+    recipe.difficultyLevel = difficultyLevel;
+    recipe.category = foundCategory._id;
+    recipe.cuisine = cuisine;
+    recipe.calorie = calorie;
+    recipe.creatorUser = creatorUser;
+
+    // If a new image is provided, update it
     if (req.file) {
       recipe.image = req.file.path;
     }
 
-    if (title) {
-      recipe.title = title;
-    }
-
-    // Update other fields as needed
-
+    // Save the updated recipe
     await recipe.save();
 
     res.status(200).json({ message: "Recipe updated successfully" });
   } catch (error) {
-    console.log("Error updating recipe", error);
+    console.error("Error updating recipe", error);
     res.status(500).json({ message: "Error updating recipe" });
   }
 };
+
 
 // Get all recipes
 const getAllRecipes = async (req, res) => {

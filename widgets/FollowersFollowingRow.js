@@ -45,7 +45,7 @@ export default function FollowersFollowingRow({ UserId }) {
       </View>
     );
   }
-  const creatorId = userProfile.userId;
+  const CreatorID = userProfile._id;
   const username = userProfile.username;
   const imageUrl = userProfile.UserImage;
   const cleanedImageUrl = imageUrl ? imageUrl.replace(/\\/g, "/") : "";
@@ -57,7 +57,6 @@ export default function FollowersFollowingRow({ UserId }) {
   } else {
     imageSource = source;
   }
-
   return (
     <View
       className="w-full h-12 bg-white rounded-[5] mt-3 px-4 flex-row items-center "
@@ -66,7 +65,7 @@ export default function FollowersFollowingRow({ UserId }) {
       <View className="w-full flex-row items-center justify-between">
         <View className="flex-row">
           <TouchableOpacity
-            onPress={() => navigation.navigate("OthersProfile", { creatorId })}
+            onPress={() => navigation.navigate("OthersProfile", { CreatorID })}
           >
             <Image source={imageSource} className="w-9 h-9 rounded-full" />
           </TouchableOpacity>

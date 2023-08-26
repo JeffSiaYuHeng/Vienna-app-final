@@ -8,54 +8,52 @@ import axios from "axios";
 export default function FollowButton({ creatorId }) {
   const followedId = creatorId;
   const [userFollow, setUserFollow] = useState(null);
-
-  useEffect(() => {
-    const fetchUserFollow = async () => {
-      try {
-        const token = await AsyncStorage.getItem("authToken");
-        const decodedToken = jwt_decode(token);
-        const userId = decodedToken.userId;
         const [userProfile, setUserProfile] = useState(null);
 
-        const response = await axios.get(
-          `http://${IP_ADDRESS}:8000/api/userFollow?userId=${userId}&followedId=${followedId}`
-        );
+        useEffect(() => {
+          const fetchUserFollow = async () => {
+            try {
+              const token = await AsyncStorage.getItem("authToken");
+              const decodedToken = jwt_decode(token);
+              const userId = decodedToken.userId;
 
-        if (response.data) {
-          setUserFollow(response.data);
-        }
-      } catch (error) {
-        console.log("Error fetching user follow", error);
-      }
-    };
+              const response = await axios.get(
+                `http://${IP_ADDRESS}:8000/api/userFollow?userId=${userId}&followedId=${followedId}`
+              );
 
-    fetchUserFollow();
+              if (response.data) {
+                setUserFollow(response.data);
+              }
+            } catch (error) {
+              console.log("Error fetching user follow", error);
+            }
+          };
 
-    const fetchUserProfile = async () => {
-      try {
-        const token = await AsyncStorage.getItem("authToken");
-        const decodedToken = jwt_decode(token);
-        const userId = decodedToken.userId;
-        const response = await axios.get(
-          `http://${IP_ADDRESS}:8000/api/users/user/${userId}`
-        );
+          fetchUserFollow();
 
-        const user = response.data;
-        setUserProfile(user);
-        setLoading(false);
+          const fetchUserProfile = async () => {
+            try {
+              const token = await AsyncStorage.getItem("authToken");
+              const decodedToken = jwt_decode(token);
+              const userId = decodedToken.userId;
+              const response = await axios.get(
+                `http://${IP_ADDRESS}:8000/api/users/user/${userId}`
+              );
 
-        // Check if the user's initialStatus is "Inactive"
-        if (user.initialStatus === "Inactive") {
-          // Navigate to the "InitializeProfile" screen
-          navigation.navigate("InitialUserProfile");
-        }
-      } catch (error) {
-        console.log("Error fetching user profile", error);
-      }
-    };
+              const user = response.data;
+              setUserProfile(user);
+              // Check if the user's initialStatus is "Inactive"
+              if (user.initialStatus === "Inactive") {
+                // Navigate to the "InitializeProfile" screen
+                navigation.navigate("InitialUserProfile");
+              }
+            } catch (error) {
+              console.log("Error fetching user profile", error);
+            }
+          };
 
-    fetchUserProfile();
-  }, []);
+          fetchUserProfile();
+        }, []);
 
 
 
@@ -84,6 +82,7 @@ export default function FollowButton({ creatorId }) {
           message: `${userProfile.username} have a new follower`, // 通知消息内容
         }
       );
+
 
       console.log("User Followed successfully", response.data);
       console.log("Notification created successfully", notificationResponse.data);

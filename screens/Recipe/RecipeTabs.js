@@ -10,7 +10,11 @@ import {
   ActivityIndicator,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import {
+  useNavigation,
+  useRoute,
+  useFocusEffect,
+} from "@react-navigation/native";
 import {
   HeartIcon,
   MinusCircleIcon,
@@ -32,6 +36,7 @@ import jwt_decode from "jwt-decode"; // Assuming you have jwt-decode installed
 import IP_ADDRESS from "../../config"; // Adjust the path as needed
 import UserProfileRow from "../../widgets/UserProfileRow";
 import { RenderStartWidgets } from "../../widgets/RenderStartWidgets";
+import RecipeIngredientSmallBox from "../../widgets/RecipeIngredientSmallBox";
 
 export default function RecipeTabs() {
   const navigation = useNavigation();
@@ -114,6 +119,19 @@ export default function RecipeTabs() {
       console.log(response.data); // Log the successful response data
 
       setRecipeLike(true);
+
+      // 创建通知
+      const notificationResponse = await axios.post(
+        `http://${IP_ADDRESS}:8000/api/notifications`,
+        {
+          recipientId: CreatorID, // 接收通知的用户ID，被关注的用户
+          senderId: userId, // 发送通知的用户ID，关注者的用户ID
+          type: "like", // 通知类型，可以根据需要调整
+          message: `have a new follower`, // 通知消息内容
+        }
+      );
+
+      console.log("Notification created"); // Log the successful notification creation
     } catch (error) {
       console.error("RecipeLike Creation Error", error); // Log the error
 
@@ -227,6 +245,26 @@ export default function RecipeTabs() {
       );
     }
   };
+  const [recipeIngredients, setRecipeIngredients] = useState([]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchRecipeIngredient = async () => {
+        try {
+          const response = await axios.get(
+            `http://${IP_ADDRESS}:8000/api/recipeIngredients/${RecipeID}`
+          );
+          setRecipeIngredients(response.data.recipeIngredients);
+          setLoading(false);
+        } catch (error) {
+          console.error("Error fetching recipeIngredients", error);
+          setLoading(false);
+        }
+      };
+
+      fetchRecipeIngredient();
+    }, []) // Dependency array includes RecipeID
+  );
 
   if (loading) {
     return (
@@ -318,15 +356,17 @@ export default function RecipeTabs() {
             {/* Main ingredient */}
             <View className="flex-row w-full items-center justify-between">
               <View className="flex-row">
-                <View className="flex items-center justify-center px-1 h-5 ml-1 bg-CEEDDA0 rounded">
-                  <Text className="text-C645623 text-xs">{"tess"}</Text>
-                </View>
-                <View className="flex items-center justify-center px-1 h-5 ml-1 bg-CDEE8B5 rounded">
-                  <Text className="text-C645623 text-xs">{"tess"}</Text>
-                </View>
-                <View className="flex items-center justify-center px-1 h-5 ml-1 bg-CEEDDA0 rounded">
-                  <Text className="text-C645623 text-xs">{"tess"}</Text>
-                </View>
+                {recipeIngredients.length > 0 ? (
+                  recipeIngredients.slice(0, 3).map((recipeIngredient) => (
+                    <RecipeIngredientSmallBox
+                      key={recipeIngredient._id} // Use a unique identifier from your data here
+                      recipeIngredientID={recipeIngredient._id}
+                      IngredientId={recipeIngredient.RecipeIngredientId}
+                    />
+                  ))
+                ) : (
+                  <Text className="ml-2"></Text>
+                )}
               </View>
               <View className="flex-row gap-x-3">
                 <View className="flex-row items-center justify-center px-4 h-10 ml-1 bg-CEEDDA0 rounded">

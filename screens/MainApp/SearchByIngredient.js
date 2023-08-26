@@ -150,85 +150,81 @@ const IngredientSearchScreen = () => {
       </LinearGradient>
 
       <View className="w-100 p-4 h-screen  ">
-
         <View className="flex-row justify-between  mb-4">
-        <TouchableOpacity
-          onPress={toggleAddIngredient}
-          className=" items-center flex-row justify-between px-3  h-8   bg-CC5ECBE rounded-lg"
-        >
-          <Text className="font-bold text-C2B5708  text-sm">Add Ingredient</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={clearAllSelections} // Call the clearAllSelections function
-          className=" w-[70px] bg-red-400 h-8 justify-around px-3 rounded-lg items-center flex-row "
-        >
-          <Text className="font-bold text-sm text-white">Clear All</Text>
-        </TouchableOpacity>
-</View>
-
-
-
-        <View  style={styles.cardContainer} className="w-100 bg-white h-32 rounded-xl flex-row flex-wrap p-4">
-
-        {selectedIngredients.length > 0 ? (
-          selectedIngredients.map((selectedIngredient) => (
-            <SearchByIngredientSmallBox
-              key={selectedIngredient._id} // Use a unique identifier from your data here
-              RecipeIngredientId={selectedIngredient}
-            />
-          ))
-        ) : (
-          <Text className="ml-2">No ingredients Selected.</Text>
-        )}
-
-
+          <TouchableOpacity
+            onPress={toggleAddIngredient}
+            className=" items-center flex-row justify-between px-3  h-8   bg-CC5ECBE rounded-lg"
+          >
+            <Text className="font-bold text-C2B5708  text-sm">
+              Add Ingredient
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={clearAllSelections} // Call the clearAllSelections function
+            className=" w-[70px] bg-red-400 h-8 justify-around px-3 rounded-lg items-center flex-row "
+          >
+            <Text className="font-bold text-sm text-white">Clear All</Text>
+          </TouchableOpacity>
         </View>
 
+        <View
+          style={styles.cardContainer}
+          className="w-100 bg-white h-32 rounded-xl flex-row flex-wrap p-4"
+        >
+          {selectedIngredients.length > 0 ? (
+            selectedIngredients.map((selectedIngredient) => (
+              <SearchByIngredientSmallBox
+                key={selectedIngredient._id} // Use a unique identifier from your data here
+                RecipeIngredientId={selectedIngredient}
+              />
+            ))
+          ) : (
+            <Text className="ml-2">No ingredients Selected.</Text>
+          )}
+        </View>
 
         <View className="w-100 items-center justify-center pt-2">
-        <TouchableOpacity
-          onPress={searchRecipes}
-          className=" items-center flex-row justify-between px-3  h-8  bg-CC5ECBE rounded-lg"
-        >
-          <Text className="font-bold text-C2B5708  text-sm">Search</Text>
-        </TouchableOpacity>
-                  <Text className="font-bold text-C2B5708 text-lg py-2">
-          Match's Recipes
-        </Text>
-      </View>
-      <ScrollView
-        className="p-5"
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          paddingBottom: 10,
-          marginBottom: 30,
-        }}
-      >
-                {recipes.length > 0 ? (
-        recipes.map((recipe, index) => (
-          <RecipeCard
-            key={recipe._id} // This should be category._id
-            RecipeID={recipe._id} // This should be category._i
-            imgUrl={recipe.image}
-            Title={recipe.title || "Unknown Title"}
-            date={recipe.createdAt}
-            Description={recipe.description || "No description available"}
-            rates={5}
-            Calorie={recipe.calorie}
-            CreatorID={recipe.creatorUser}
-            Recipe_View={150}
-            Cooking_Time={recipe.cookingTime || "Unknown Time"}
-            Difficulty_Level={recipe.difficultyLevel || "Unknown Level"}
-            Like={15}
-          />
-        ))
-      ) : (
-        <View className="w-100 items-center">
-          <Text>No Recipe found.</Text>
+          <TouchableOpacity
+            onPress={searchRecipes}
+            className=" items-center flex-row justify-between px-3  h-8  bg-CC5ECBE rounded-lg"
+          >
+            <Text className="font-bold text-C2B5708  text-sm">Search</Text>
+          </TouchableOpacity>
+          <Text className="font-bold text-C2B5708 text-lg py-2">
+            Match's Recipes
+          </Text>
         </View>
-      )}
-              </ScrollView>
-
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{
+            paddingBottom: 70,
+            marginBottom: 30,
+          }}
+        >
+          {recipes.length > 0 ? (
+            recipes.map((recipe, index) => (
+              <RecipeCard
+                key={recipe._id} // This should be category._id
+                RecipeID={recipe._id} // This should be category._i
+                imgUrl={recipe.image}
+                Title={recipe.title || "Unknown Title"}
+                date={recipe.createdAt}
+                Description={recipe.description || "No description available"}
+                rates={5}
+                Calorie={recipe.calorie}
+                CreatorID={recipe.creatorUser}
+                Recipe_View={150}
+                Cooking_Time={recipe.cookingTime || "Unknown Time"}
+                Difficulty_Level={recipe.difficultyLevel || "Unknown Level"}
+                Like={15}
+              />
+            ))
+          ) : (
+            <View className="w-100 items-center">
+              <Text>No Recipe found.</Text>
+            </View>
+          )}
+        </ScrollView>
       </View>
 
       {isAddIngredientVisible && (

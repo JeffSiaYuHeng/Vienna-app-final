@@ -5,13 +5,65 @@ import {
   SafeAreaView,
   StyleSheet,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { TrashIcon, XMarkIcon } from "react-native-heroicons/solid";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import jwt_decode from "jwt-decode";
+import IP_ADDRESS from "../../config"; // Adjust the path as needed
+import NotificationRow from "../../widgets/NotificationRow";
 
 const Notification = () => {
   const navigation = useNavigation();
+
+  const [notifications, setNotifications] = useState([]); // State to store notifications
+
+  useEffect(() => {
+    // Fetch notifications when the component mounts
+    fetchNotifications();
+  }, []);
+
+  const fetchNotifications = async () => {
+    try {
+      const token = await AsyncStorage.getItem("authToken");
+      const decodedToken = jwt_decode(token);
+      const userId = decodedToken.userId;
+      // Replace with your API endpoint to fetch notifications
+      const response = await axios.get(
+        `http://${IP_ADDRESS}:8000/api/notifications/notifications/${userId}`
+      );
+      if (response.data) {
+        const fetchedNotifications = response.data;
+        setNotifications(fetchedNotifications);
+        // Get the IDs of notifications to mark as read
+        const notificationIdsToMarkAsRead = fetchedNotifications
+          .filter((notification) => !notification.isRead)
+          .map((notification) => notification._id);
+
+        if (notificationIdsToMarkAsRead.length > 0) {
+          // Send a request to mark the notifications as read on the server
+          await axios.post(
+            `http://${IP_ADDRESS}:8000/api/notifications/markAsRead`,
+            { notificationIds: notificationIdsToMarkAsRead }
+          );
+
+          // Update the fetched notifications to mark them as read
+          const updatedNotifications = fetchedNotifications.map(
+            (notification) => ({
+              ...notification,
+              isRead: true,
+            })
+          );
+
+          // Update state with fetched notifications
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+    }
+  };
 
   const HomepageGate = () => {
     navigation.navigate("TabNavigator");
@@ -32,36 +84,20 @@ const Notification = () => {
         </TouchableOpacity>
       </LinearGradient>
       <View className="w-100 p-2 pt-4 ">
-        <View
-          className="w-100 h-fit rounded-xl bg-white p-2 flex-row items-center justify-between pr-4 mb-2"
-          style={styles.cardContainer}
-        >
-          {/* Follow */}
-          <View className=" flex-row items-center gap-x-2">
-            <View className="items-center justify-center w-12 h-12 bg-gray-200 rounded-full">
-              <Text>Icon</Text>
-            </View>
-            <Text>Jeff Starts follow you!</Text>
-            <Text className="text-gray-500 text-xs">2h</Text>
-          </View>
-          <TrashIcon size={22} color="#000" />
-        </View>
-        {/* Follow */}
         {/* Likes */}
-        <View
-          className="w-100 h-fit rounded-xl bg-white p-2 flex-row items-center justify-between pr-4 mb-2"
-          style={styles.cardContainer}
-        >
-          <View className=" flex-row items-center gap-x-2">
-            <View className="items-center justify-center w-12 h-12 bg-gray-200 rounded-full">
-              <Text>Icon</Text>
-            </View>
-            <Text>Jeff Likes your Recipe!</Text>
-            <Text className="text-gray-500 text-xs">2h</Text>
-          </View>
-          <TrashIcon size={22} color="#000" />
-        </View>
-        {/* Likes */}
+        {notifications.length === 0 ? ( // Check if there are no notifications
+          <Text>No Notification found</Text>
+        ) : (
+          // If there are notifications, map through and render them
+          notifications.map((notification) => (
+            <NotificationRow
+              key={notification._id}
+              senderId={notification.senderId}
+              type={notification.type}
+              createdAt={notification.createdAt}
+            />
+          ))
+        )}
       </View>
     </SafeAreaView>
   );

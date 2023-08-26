@@ -46,7 +46,7 @@ export default function TrendingComponent() {
   return (
     <View>
       {/* Header */}
-      <View className="flex-row px-5 mt-2 justify-between">
+      <View className="flex-row px-2 mt-2 justify-between">
         <View>
           {/* <TouchableOpacity className=" w-14 h-6 flex mb-2 items-center justify-center bg-CC5ECBE rounded-full">
             <Text className="text-xs text-C2B5708">View All</Text>
@@ -55,7 +55,7 @@ export default function TrendingComponent() {
       </View>
       {/**Content */}
       <ScrollView
-        className="p-5"
+        className="p-2"
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           paddingBottom: 10,

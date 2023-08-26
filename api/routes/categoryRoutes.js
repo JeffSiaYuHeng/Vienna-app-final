@@ -14,4 +14,6 @@ router.delete("/delete/:categoryId", categoryController.deleteCategory);
 // Fetch a specific category by ID
 router.get("/find/:categoryId", categoryController.getCategoryById);
 
+router.get("/searchByName", categoryController.SearchByName);
+
 module.exports = router;

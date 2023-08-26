@@ -5,4 +5,7 @@ const dietaryRestrictionController = require("../controllers/dietaryRestrictionC
 // Get all dietary restrictions
 router.get("/", dietaryRestrictionController.getAllDietaryRestrictions);
 
+
+router.get("/:id", dietaryRestrictionController.getDietaryRestrictionById); // Add this route
+
 module.exports = router;

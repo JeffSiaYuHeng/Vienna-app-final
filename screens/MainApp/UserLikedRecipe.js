@@ -9,13 +9,23 @@ import React, { useEffect, useState } from "react";
 import RecipeCard from "../../widgets/RecipeCard";
 import IP_ADDRESS from "../../config"; // Adjust the path as needed
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwt_decode from "jwt-decode";
 import { LinearGradient } from "expo-linear-gradient";
 
 export default function UserLikedRecipe() {
+  const {
+    params: { userId },
+  } = useRoute();
+
+  const fetchedUserId = userId;
+
   const navigation = useNavigation();
 
   const [recipeLikes, setRecipeLikes] = useState([]);
@@ -25,23 +35,19 @@ export default function UserLikedRecipe() {
   useEffect(() => {
     const fetchRecipeLikes = async () => {
       try {
-        const token = await AsyncStorage.getItem("authToken");
-        const decodedToken = jwt_decode(token);
-        const userId = decodedToken.userId;
-  
         const response = await axios.get(
-          `http://${IP_ADDRESS}:8000/api/recipeLikes/byUser?userId=${userId}`
+          `http://${IP_ADDRESS}:8000/api/recipeLikes/byUser?userId=${fetchedUserId}`
         );
-  
+
         setRecipeLikes(response.data);
       } catch (error) {
         console.log("Error fetching recipe likes", error);
       }
     };
-  
+
     fetchRecipeLikes();
   }, []);
-  
+
   useEffect(() => {
     const fetchRecipes = async () => {
       try {
@@ -53,47 +59,37 @@ export default function UserLikedRecipe() {
             );
             return response.data;
           });
-  
+
           // Wait for all requests to complete and set the recipes
           const fetchedRecipes = await Promise.all(recipePromises);
           setRecipes(fetchedRecipes);
           setLoading(false); // Set loading to false once recipes are fetched
-  
+
           // Additional logic here if needed after fetching recipes
         }
       } catch (error) {
         console.error("Error fetching recipes", error);
       }
     };
-  
+
     fetchRecipes();
   }, [recipeLikes]);
 
-
-
-
-
   useFocusEffect(
     React.useCallback(() => {
-
-
       setRecipes([]);
       const fetchRecipeLikes = async () => {
         try {
-          const token = await AsyncStorage.getItem("authToken");
-          const decodedToken = jwt_decode(token);
-          const userId = decodedToken.userId;
-    
           const response = await axios.get(
-            `http://${IP_ADDRESS}:8000/api/recipeLikes/byUser?userId=${userId}`
+            `http://${IP_ADDRESS}:8000/api/recipeLikes/byUser?userId=${fetchedUserId}`
           );
-    
+
           setRecipeLikes(response.data);
         } catch (error) {
           console.log("Error fetching recipe likes", error);
         }
       };
-    
+
       fetchRecipeLikes();
     }, [])
   );

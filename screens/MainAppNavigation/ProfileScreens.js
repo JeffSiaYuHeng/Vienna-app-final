@@ -25,6 +25,7 @@ export default function AccountScreens() {
   const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [recipes, setRecipes] = useState([]);
+  const [userId, setUserId] = useState("");
 
   //This Part of Code is used to fetch the userDetail and Check if it Initialize
   useFocusEffect(
@@ -34,6 +35,7 @@ export default function AccountScreens() {
           const token = await AsyncStorage.getItem("authToken");
           const decodedToken = jwt_decode(token);
           const userId = decodedToken.userId;
+          setUserId(userId);
           const response = await axios.get(
             `http://${IP_ADDRESS}:8000/api/users/user/${userId}`
           );
@@ -209,21 +211,21 @@ export default function AccountScreens() {
 
           <View className="flex-row w-full h-20 p-3 pt-6 justify-around">
             <TouchableOpacity
-              onPress={() => navigation.navigate("UserFollowers")}
+              onPress={() => navigation.navigate("UserFollowers", { userId })}
               className=" border-gray-200 w-20 h-18 justify-center  text-center items-center"
             >
               <Text className="text-gray-600 font-bold">Followers</Text>
               <Text>{!FollowersCount ? "0" : FollowersCount}</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => navigation.navigate("UserFollowed")}
+              onPress={() => navigation.navigate("UserFollowed", { userId })}
               className="border-l-[1px] border-r-[1px] border-gray-200 w-20 h-18 justify-center  text-center items-center"
             >
               <Text className="text-gray-600 font-bold">Following</Text>
               <Text>{!FollowingCount ? "0" : FollowingCount}</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => navigation.navigate("UserLikedRecipe")}
+              onPress={() => navigation.navigate("UserLikedRecipe", { userId })}
               className="w-20 h-18 justify-center  text-center items-center"
             >
               <Text className="text-gray-600 font-bold">Likes</Text>
@@ -238,10 +240,10 @@ export default function AccountScreens() {
         </Text>
       </View>
       <ScrollView
-        className="p-5"
+        className="px-2"
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
-          paddingBottom: 10,
+          paddingBottom: 70,
           marginBottom: 30,
         }}
       >

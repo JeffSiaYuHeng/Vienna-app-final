@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import CategoryComponent from "../../components/CategoryComponent";
+import FeatureComponent from "../../components/FeatureComponent";
 import TrendingComponent from "../../components/TrendingComponent";
 import { useNavigation } from "@react-navigation/native";
-import { ScrollView, TextInput } from "react-native";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { ScrollView, Image } from "react-native";
+import { View, TouchableOpacity, Text } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { MagnifyingGlassIcon } from "react-native-heroicons/outline";
 import { BellIcon } from "react-native-heroicons/solid";
@@ -22,6 +22,10 @@ export default function HomeScreens() {
     navigation.navigate("Notification");
   };
 
+  const SearchRecipeByNameGate = () => {
+    navigation.navigate("SearchRecipeByName");
+  };
+
   return (
     <SafeAreaView className="flex-1">
       <LinearGradient
@@ -30,21 +34,22 @@ export default function HomeScreens() {
         end={[1, 0]} // Ending point (optional, default is [1,0])
         className="fixed  flex p-3 justify-between flex-row w-full h-[60]  items-center"
       >
-        <View className="bg-white w-60 h-9 rounded-[10px] px-4 flex-row items-center justify-between">
-          <TextInput placeholder="Search for Recipe..." />
-          <MagnifyingGlassIcon size={25} color="#B4B4B4" />
+        <TouchableOpacity onPress={SearchRecipeByNameGate} className="bg-CC5ECBE  rounded-[10px] p-2 flex-row items-center justify-between">
+          <MagnifyingGlassIcon size={20} color="#2B5708" />
+        </TouchableOpacity>
+        <View>
+          <Text className="text-white font-bold text-lg">Vienna | Home</Text>
         </View>
         <TouchableOpacity onPress={NotificationGate}>
           <BellIcon size={25} color="#FFFFFF" />
         </TouchableOpacity>
       </LinearGradient>
 
-      {}
       <ScrollView>
         {/* Header */}
 
         {/* Category */}
-        <CategoryComponent />
+        <FeatureComponent />
         {/* Trending Section */}
         <TrendingComponent />
       </ScrollView>

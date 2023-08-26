@@ -16,6 +16,9 @@ import OthersProfile from "../screens/MainApp/OthersProfile";
 import UserFollowed from "../screens/MainApp/UserFollowed";
 import UserFollowers from "../screens/MainApp/UserFollowers";
 import UserLikedRecipe from "../screens/MainApp/UserLikedRecipe";
+import SearchByIngredient from "../screens/MainApp/SearchByIngredient";
+import SearchRecipeByName from "../screens/MainApp/SearchRecipeByName";
+
 // /MainAppNavigation
 import TabNavigator from "./TabNavigator";
 // Recipe
@@ -65,6 +68,8 @@ const StackNavigator = () => {
         <Stack.Screen name="UserFollowed" component={UserFollowed} />
         <Stack.Screen name="UserFollowers" component={UserFollowers} />
         <Stack.Screen name="UserLikedRecipe" component={UserLikedRecipe} />
+        <Stack.Screen name="SearchByIngredient" component={SearchByIngredient} />
+        <Stack.Screen name="SearchRecipeByName" component={SearchRecipeByName} />
 
         {/* MainApp END */}
 

@@ -1,245 +1,285 @@
-import {
-  View,
-  SafeAreaView,
-  Text,
-  TouchableOpacity,
-  Alert,
-  StyleSheet,
-  ScrollView,
-} from "react-native";
-import React, { useEffect, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
-import { LinearGradient } from "expo-linear-gradient";
-import { PlayIcon, PlusIcon, TrashIcon } from "react-native-heroicons/solid";
-import AddInstructionRow from "../widgets/AddInstructionRow";
-import axios from "axios";
-import IP_ADDRESS from "../config"; // Adjust the path as needed
-import AddInstructionComponents from "../components/AddInstructionComponents"; // Import the component
-import AddIngredientComponents from "../components/AddIngredientComponents";
-import AddRecipeIngredientRow from "../widgets/AddRecipeIngredientRow";
+  import React, { useEffect, useState } from "react";
+  import {
+    View,
+    TextInput,
+    ScrollView,
+    Text,
+    TouchableOpacity,
+    Button,
+    FlatList,
+    StyleSheet,
+    SafeAreaView,
+  } from "react-native";
+  import axios from "axios";
+  import { useFocusEffect, useNavigation } from "@react-navigation/native"; // Import useFocusEffect
+  import IP_ADDRESS from "../config"; // Adjust the path as needed
+  import SelectionToggle from "../widgets/SelectionToggle";
+  import { XMarkIcon, PlusIcon } from "react-native-heroicons/solid";
+  import { LinearGradient } from "expo-linear-gradient";
+import SearchByIngredientSmallBox from "../widgets/SearchByIngredientSmallBox";
+import { Alert } from "react-native";
+import RecipeCard from "../widgets/RecipeCard";
 
-const InstructionIngredient = ({ route }) => {
-  const { recipeId } = route.params;
-  const navigation = useNavigation();
+  const IngredientSearchScreen = () => {
+    const [ingredientName, setIngredientName] = useState("");
+    const [recipes, setRecipes] = useState([]);
+    const [searching, setSearching] = useState(false); // To display a loading indicator
+    const [searchText, setSearchText] = useState("");
+    const [filteredData, setFilteredData] = useState([]);
 
-  const [recipeIngredients, setRecipeIngredients] = useState([]);
-  const [showAddRecipeIngredient, setShowAddRecipeIngredient] = useState(false);
-  const toggleAddRecipeIngredient = () => {
-    setShowAddRecipeIngredient(!showAddRecipeIngredient);
-  };
+    const [ingredients, setIngredients] = useState([]);
+    const [selectedIngredients, setSelectedIngredients] = useState([]);
+    const [isAddIngredientVisible, setIsAddIngredientVisible] = useState(false);
+    const navigation = useNavigation();
 
-  const closeAddRecipeIngredient = async () => {
-    try {
-      // Refresh the page
-      const response = await axios.get(
-        `http://${IP_ADDRESS}:8000/api/recipeIngredients/${recipeId}`
-      );
-      setRecipeIngredients(response.data.recipeIngredients);
-    } catch (error) {
-      console.error("Error fetching recipe Ingredients", error);
-    }
-    setShowAddRecipeIngredient(false);
-  };
+    const HomepageGate = () => {
+      navigation.navigate("TabNavigator");
+    };
 
-  const handleDeleteIngredient = async () => {
-    try {
-      // Refresh the page
-      const response = await axios.get(
-        `http://${IP_ADDRESS}:8000/api/recipeIngredients/${recipeId}`
-      );
-      setRecipeIngredients(response.data.recipeIngredients);
-    } catch (error) {
-      console.error("Error fetching recipeIngredients", error);
-    }
-  };
-
-  const [instructions, setInstructions] = useState([]);
-  const [showAddInstruction, setShowAddInstruction] = useState(false);
-  const toggleAddInstruction = () => {
-    setShowAddInstruction(!showAddInstruction);
-  };
-
-  const closeAddInstruction = async () => {
-    try {
-      // Refresh the page
-      const response = await axios.get(
-        `http://${IP_ADDRESS}:8000/api/instructions/${recipeId}`
-      );
-      setInstructions(response.data.instructions);
-    } catch (error) {
-      console.error("Error fetching instructions", error);
-    }
-    setShowAddInstruction(false);
-  };
-
-  useEffect(() => {
-    const fetchRecipeIngredient = async () => {
+    // Function to toggle the visibility of the "Add Ingredient" section
+    const toggleAddIngredient = () => {
+      setIsAddIngredientVisible(!isAddIngredientVisible);
+    };
+    // Fetch ingredients from the API
+    const fetchIngredients = async () => {
       try {
         const response = await axios.get(
-          `http://${IP_ADDRESS}:8000/api/recipeIngredients/${recipeId}`
+          `http://${IP_ADDRESS}:8000/api/ingredients/`
         );
-        setRecipeIngredients(response.data.recipeIngredients);
+        setIngredients(response.data);
       } catch (error) {
-        console.error("Error fetching recipeIngredients", error);
+        console.error(error);
       }
     };
 
-    fetchRecipeIngredient();
+    // Use useFocusEffect to fetch data when the component gains focus
+    useFocusEffect(
+      React.useCallback(() => {
+        fetchIngredients();
+      }, [])
+    );
 
-    const fetchInstructions = async () => {
-      try {
-        const response = await axios.get(
-          `http://${IP_ADDRESS}:8000/api/instructions/${recipeId}`
+    // Filter ingredients based on user input
+    useEffect(() => {
+      const newData = ingredients.filter((item) =>
+        item.Name.toUpperCase().includes(searchText.toUpperCase())
+      );
+      setFilteredData(newData);
+    }, [searchText, ingredients]);
+
+    // Handle search input change
+    const handleSearch = (text) => {
+      setSearchText(text);
+    };
+
+    // Toggle ingredient selection
+    const handleToggle = (IngredientId) => {
+      if (selectedIngredients.includes(IngredientId)) {
+        setSelectedIngredients((prev) =>
+          prev.filter((item) => item !== IngredientId)
         );
-        setInstructions(response.data.instructions);
-      } catch (error) {
-        console.error("Error fetching instructions", error);
+      } else {
+        setSelectedIngredients((prev) => [...prev, IngredientId]);
       }
     };
 
-    fetchInstructions();
-  }, []);
+    // Clear all selected ingredients
+    const clearAllSelections = () => {
+      setSelectedIngredients([]);
+      setRecipes([]);
+      // fetchIngredients();
+      // You may need to fetch additional data and update their selection state here
+    };
 
-  const handleDeleteInstruction = async () => {
-    try {
-      // Refresh the page
-      const response = await axios.get(
-        `http://${IP_ADDRESS}:8000/api/instructions/${recipeId}`
-      );
-      setInstructions(response.data.instructions);
-    } catch (error) {
-      console.error("Error fetching instructions", error);
-    }
-  };
+    useEffect(() => {
+      console.log(selectedIngredients);
+    }, [selectedIngredients]); // Log the state whenever it changes
 
-  return (
-    <SafeAreaView className="flex-1 bg-CF4FFF5 pb-14">
-      <LinearGradient
-        colors={["#7caf75", "#6db29a"]} // Adjust the gradient colors as needed
-        start={[0, 0]} // Starting point (optional, default is [0,0])
-        end={[1, 0]} // Ending point (optional, default is [1,0])
-        className="flex p-4 pt-10 justify-center  w-full h-[90]  items-center"
-      >
-        <Text className="text-lg font-bold text-white">Create a Recipe</Text>
-        <Text className="text-xs font-bold text-C2B5708">
-          Instruction & Ingredient
-        </Text>
-      </LinearGradient>
-      <ScrollView className="w-100 p-2 pt-4 ">
-        <View
-          className="w-100 rounded-xl bg-white p-4 pt-2 gap-y-2"
-          style={styles.cardContainer}
+    const searchRecipes = async () => {
+
+      if (selectedIngredients.length === 0) {
+        Alert.alert("Error", "At least select one Ingredient");
+        return; // Exit the function early
+      }
+
+
+
+      try {
+        setSearching(true); // Start searching, show a loading indicator
+    
+        const response = await axios.post(
+          `http://${IP_ADDRESS}:8000/api/ingredientSearch/search`,
+          { ingredientIds: selectedIngredients }, // Send the selected ingredient IDs as the request body
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+    
+        if (!response.data.recipes) {
+          throw new Error("Ingredient not found");
+        }
+    
+        setRecipes(response.data.recipes);
+        console.log(recipes);
+      } catch (error) {
+        console.error(error);
+        // Handle error appropriately (e.g., show an error message)
+      } finally {
+        setSearching(false); // Finish searching, hide the loading indicator
+      }
+    };
+    
+    return (
+      <SafeAreaView className="flex-1 bg-CF4FFF5 ">
+        <LinearGradient
+          colors={["#7caf75", "#6db29a"]} // Adjust the gradient colors as needed
+          start={[0, 0]} // Starting point (optional, default is [0,0])
+          end={[1, 0]} // Ending point (optional, default is [1,0])
+          className="flex p-4 pt-10 justify-between flex-row w-full h-[80]  items-center"
         >
-          <Text className="text-lg font-bold">Ingredient</Text>
-          <TouchableOpacity
-            onPress={toggleAddRecipeIngredient}
-            className="mt-1 items-center flex-row justify-between px-3 h-6 ml-1 w-28 bg-CC5ECBE rounded-lg"
-          >
-            <PlusIcon size={16} color="#2B5708" />
-            <Text className="font-bold text-C2B5708 text-xs">
-              Add Ingredient
-            </Text>
+          <View></View>
+          <Text className="text-lg font-bold text-white">
+            {"Search By Ingredient"}
+          </Text>
+          <TouchableOpacity onPress={HomepageGate}>
+            <XMarkIcon size={25} color="#FFFFFF" />
           </TouchableOpacity>
-          {recipeIngredients.length > 0 ? (
-            recipeIngredients.map((recipeIngredient) => (
-              <AddRecipeIngredientRow
-                key={recipeIngredient._id} // Use a unique identifier from your data here
-                recipeIngredientID={recipeIngredient._id}
-                IngredientId={recipeIngredient.RecipeIngredientId}
-                onDelete={handleDeleteIngredient}
+        </LinearGradient>
+
+        <View className="w-100 p-4 h-screen  ">
+
+          <View className="flex-row justify-between  mb-4">
+          <TouchableOpacity
+            onPress={toggleAddIngredient}
+            className=" items-center flex-row justify-between px-3  h-8   bg-CC5ECBE rounded-lg"
+          >
+            <Text className="font-bold text-C2B5708  text-sm">Add Ingredient</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={clearAllSelections} // Call the clearAllSelections function
+            className=" w-[70px] bg-red-400 h-8 justify-around px-3 rounded-lg items-center flex-row "
+          >
+            <Text className="font-bold text-sm text-white">Clear All</Text>
+          </TouchableOpacity>
+  </View>
+
+
+
+          <View  style={styles.cardContainer} className="w-100 bg-white h-32 rounded-xl flex-row flex-wrap p-4">
+
+          {selectedIngredients.length > 0 ? (
+            selectedIngredients.map((selectedIngredient) => (
+              <SearchByIngredientSmallBox
+                key={selectedIngredient._id} // Use a unique identifier from your data here
+                RecipeIngredientId={selectedIngredient}
               />
             ))
           ) : (
-            <Text className="ml-2">No ingredients found.</Text>
+            <Text className="ml-2">No ingredients Selected.</Text>
           )}
-        </View>
 
-        <View
-          className="w-100 rounded-xl bg-white p-4 pt-2 gap-y-2 mt-4"
-          style={styles.cardContainer}
-        >
-          <Text className="text-lg font-bold">Instruction</Text>
+
+          </View>
+
+
+          <View className="w-100 items-center justify-center pt-2">
           <TouchableOpacity
-            onPress={toggleAddInstruction}
-            className="mt-1 items-center flex-row justify-between px-3 h-6 ml-1 w-28 bg-CC5ECBE rounded-lg"
+            onPress={searchRecipes}
+            className=" items-center flex-row justify-between px-3  h-8  bg-CC5ECBE rounded-lg"
           >
-            <PlusIcon size={16} color="#2B5708" />
-            <Text className="font-bold text-C2B5708 text-xs">
-              Add Instruction
-            </Text>
+            <Text className="font-bold text-C2B5708  text-sm">Search</Text>
           </TouchableOpacity>
-
-          {instructions.length > 0 ? (
-            instructions.map((instruction, index) => (
-              <AddInstructionRow
-                key={instruction._id} // Use a unique identifier from your data here
-                InstructionID={instruction._id}
-                Description={instruction.Description}
-                onDelete={handleDeleteInstruction}
-              />
-            ))
-          ) : (
-            <Text className="ml-2">No instructions found.</Text>
-          )}
+                    <Text className="font-bold text-C2B5708 text-lg py-2">
+            Match's Recipes
+          </Text>
         </View>
-      </ScrollView>
-
-      {/* Conditionally render AddInstructionComponents based on showAddInstruction */}
-      {showAddInstruction && (
-        <AddInstructionComponents
-          recipeId={recipeId}
-          onClose={closeAddInstruction}
-        />
-      )}
-
-      {showAddRecipeIngredient && (
-        <AddIngredientComponents
-          recipeId={recipeId}
-          onClose={closeAddRecipeIngredient}
-        />
-      )}
-      <View className="absolute bottom-4 left-4 ">
-        <TouchableOpacity
-          onPress={navigation.goBack}
-          className="w-18 bg-CEEAEA0 h-8 justify-around px-3 rounded-[5px] items-center flex-row"
-        >
-          <PlayIcon
-            size={18}
-            color="#642323"
-            style={{ transform: [{ scaleX: -1 }] }}
-          />
-          <Text className="font-bold text-base text-C642323">Back</Text>
-        </TouchableOpacity>
-      </View>
-      <View className="absolute bottom-4 right-4 ">
-        <TouchableOpacity
-          className="w-18 bg-C73CEE2   h-8 justify-around px-3 rounded-[5px] items-center flex-row"
-          onPress={() => {
-            Alert.alert("Hey", "Recipe Created Successful");
-            navigation.navigate("TabNavigator");
+        <ScrollView
+          className="p-5"
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{
+            paddingBottom: 10,
+            marginBottom: 30,
           }}
         >
-          <Text className="font-bold text-base text-C11434E">Next</Text>
-          <PlayIcon size={18} color="#11434E" />
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
-  );
-};
+                  {recipes.length > 0 ? (
+          recipes.map((recipe, index) => (
+            <RecipeCard
+              key={recipe._id} // This should be category._id
+              RecipeID={recipe._id} // This should be category._i
+              imgUrl={recipe.image}
+              Title={recipe.title || "Unknown Title"}
+              date={recipe.createdAt}
+              Description={recipe.description || "No description available"}
+              rates={5}
+              Calorie={recipe.calorie}
+              CreatorID={recipe.creatorUser}
+              Recipe_View={150}
+              Cooking_Time={recipe.cookingTime || "Unknown Time"}
+              Difficulty_Level={recipe.difficultyLevel || "Unknown Level"}
+              Like={15}
+            />
+          ))
+        ) : (
+          <View className="w-100 items-center">
+            <Text>No Recipe found.</Text>
+          </View>
+        )}
+                </ScrollView>
 
-//style
-const styles = StyleSheet.create({
-  cardContainer: {
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
+        </View>
+
+        {isAddIngredientVisible && (
+          <View className="absolute top-[100] w-screen h-screen items-center ">
+            <View
+              className="w-[300px] rounded-xl bg-white p-4 pt-0 gap-y-4"
+              style={styles.cardContainer}
+            >
+              <View className="w-full justify-between flex-row">
+                <View></View>
+                <TouchableOpacity className="" onPress={toggleAddIngredient}>
+                  <XMarkIcon size={18} color="#000000" />
+                </TouchableOpacity>
+              </View>
+              <View className="bg-gray-200 w-full h-9 rounded-[10px] px-2 flex-row items-center justify-between">
+                <TextInput
+                  onChangeText={handleSearch}
+                  value={searchText}
+                  placeholder="Search Ingredient"
+                />
+              </View>
+
+              <ScrollView className="h-[300px]">
+                {filteredData.map((item) => (
+                  <View key={item.IngredientId}>
+                    <SelectionToggle
+                      value={item.Name}
+                      isSelected={selectedIngredients.includes(item.IngredientId)}
+                      onToggle={() => handleToggle(item.IngredientId)}
+                    />
+                  </View>
+                ))}
+              </ScrollView>
+            </View>
+          </View>
+        )}
+      </SafeAreaView>
+    );
+  };
+  //style
+  const styles = StyleSheet.create({
+    cardContainer: {
+      shadowColor: "#000",
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 5,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-});
+  });
 
-export default InstructionIngredient;
-
+  export default IngredientSearchScreen;

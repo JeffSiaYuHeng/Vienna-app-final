@@ -6,7 +6,6 @@ import {
   ActivityIndicator,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import TitleComponent from "./TitleComponent";
 import RecipeCard from "../widgets/RecipeCard";
 import IP_ADDRESS from "../config"; // Adjust the path as needed
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -48,7 +47,6 @@ export default function TrendingComponent() {
     <View>
       {/* Header */}
       <View className="flex-row px-5 mt-2 justify-between">
-        <TitleComponent title="Popular Recipe" descript="" featureCategory="" />
         <View>
           {/* <TouchableOpacity className=" w-14 h-6 flex mb-2 items-center justify-center bg-CC5ECBE rounded-full">
             <Text className="text-xs text-C2B5708">View All</Text>
@@ -73,7 +71,6 @@ export default function TrendingComponent() {
               Title={recipe.title || "Unknown Title"}
               date={recipe.createdAt}
               Description={recipe.description || "No description available"}
-              rates={5}
               Calorie={recipe.calorie}
               CreatorID={recipe.creatorUser}
               Recipe_View={150}

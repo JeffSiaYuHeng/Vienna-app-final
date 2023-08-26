@@ -23,7 +23,6 @@ import {
   StarIcon,
   FireIcon,
   PlayIcon,
-  PlusIcon,
 } from "react-native-heroicons/solid";
 import RecipeToggle from "../../components/RecipeToggle";
 import ReviewToggle from "../../components/ReviewToggle";
@@ -32,26 +31,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwt_decode from "jwt-decode"; // Assuming you have jwt-decode installed
 import IP_ADDRESS from "../../config"; // Adjust the path as needed
 import UserProfileRow from "../../widgets/UserProfileRow";
-import AddReviewComponent from "../../components/AddReviewComponent";
-
-const RatingIcon = ({ rating }) => {
-  const renderStars = () => {
-    const stars = [];
-    for (let i = 0; i < rating; i++) {
-      stars.push(
-        <StarIcon
-          key={i}
-          style={{ marginRight: 2 }}
-          color="#87C17C"
-          size={20}
-        />
-      );
-    }
-    return stars;
-  };
-
-  return <View className="flex-row">{renderStars()}</View>;
-};
+import { RenderStartWidgets } from "../../widgets/RenderStartWidgets";
 
 export default function RecipeTabs() {
   const navigation = useNavigation();
@@ -62,7 +42,6 @@ export default function RecipeTabs() {
       Title,
       Description,
       formattedDate,
-      rates,
       Calorie,
       username,
       sourceUser,
@@ -249,15 +228,6 @@ export default function RecipeTabs() {
     }
   };
 
-  const closeAddComment = async () => {
-    setShowCreateComment(false);
-  };
-
-  const [showCreateComment, setShowCreateComment] = useState(false);
-  const toggleAddComment = () => {
-    setShowCreateComment(!showCreateComment);
-  };
-
   if (loading) {
     return (
       <View>
@@ -300,7 +270,7 @@ export default function RecipeTabs() {
           {/* Detail of the Recipe */}
           <View className="">
             <View className="flex-row items-center justify-between">
-              <RatingIcon rating={rates} />
+              <RenderStartWidgets recipeId={RecipeID} />
               <View className="flex-row gap-2">
                 <View className="flex items-center justify-center px-1 h-5 ml-4 bg-C9BC17C rounded">
                   <Text className="text-white font-bold text-xs">
@@ -314,20 +284,24 @@ export default function RecipeTabs() {
                 </View>
               </View>
               <View>
-                {recipeLike ? (
-                  <TouchableOpacity
-                    onPress={handleDeleteRecipeLike}
-                    className="w-10 h-10 bg-red-400 items-center justify-center rounded-xl  "
-                  >
-                    <MinusCircleIcon size={26} color="#fff" />
-                  </TouchableOpacity>
+                {userId !== CreatorID ? (
+                  recipeLike ? (
+                    <TouchableOpacity
+                      onPress={handleDeleteRecipeLike}
+                      className="w-10 h-10 bg-red-400 items-center justify-center rounded-xl"
+                    >
+                      <MinusCircleIcon size={26} color="#fff" />
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity
+                      onPress={handleCreateRecipeLike}
+                      className="w-10 h-10 bg-CEFA8C2 items-center justify-center rounded-xl"
+                    >
+                      <HeartIcon size={26} color="#fff" />
+                    </TouchableOpacity>
+                  )
                 ) : (
-                  <TouchableOpacity
-                    onPress={handleCreateRecipeLike}
-                    className="w-10 h-10 bg-CEFA8C2 items-center justify-center rounded-xl  "
-                  >
-                    <HeartIcon size={26} color="#fff" />
-                  </TouchableOpacity>
+                  <></> // This is an empty fragment, effectively rendering nothing
                 )}
               </View>
             </View>
@@ -383,10 +357,6 @@ export default function RecipeTabs() {
         </View>
       </ScrollView>
 
-      {showCreateComment && (
-        <AddReviewComponent RecipeID={RecipeID} onClose={closeAddComment} />
-      )}
-
       {showReviewBtn && (
         <View className="absolute bottom-4 right-4 ">
           <TouchableOpacity
@@ -405,16 +375,6 @@ export default function RecipeTabs() {
       )}
       {showDetailBtn && (
         <View>
-          <View className="absolute bottom-4 left-4">
-            <TouchableOpacity
-              onPress={toggleAddComment}
-              className="w-28 bg-C2B5708 h-8 justify-around px-3 rounded-[5px] items-center flex-row "
-            >
-              <PlusIcon size={20} color="#fff" />
-              <Text className="font-bold text-base text-white">Comment</Text>
-            </TouchableOpacity>
-          </View>
-
           <View className="absolute bottom-4 right-4">
             <TouchableOpacity
               onPress={() => {

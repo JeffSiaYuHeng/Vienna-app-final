@@ -15,22 +15,22 @@ export default function AddRecipeIngredientRow({
 
 
 
-  const handleDeleteIngredient = async () => {
-    // try {
-    //   const response = await fetch(
-    //     `http://${IP_ADDRESS}:8000/api/ingredients/delete/${IngredientId}`,
-    //     {
-    //       method: "DELETE",
-    //     }
-    //   );
-    //   const data = await response.json();
-    //   console.log(data.message);
-    //   onDelete();
-    //   // Add any additional logic or UI updates after successful deletion
-    // } catch (error) {
-    //   console.log("Error deleting ingredient", error);
-    //   console.log(error.message);
-    // }
+  const handleDeleteRecipeIngredient = async () => {
+    try {
+      const response = await fetch(
+        `http://${IP_ADDRESS}:8000/api/recipeIngredients/delete/${recipeIngredientID}`,
+        {
+          method: "DELETE",
+        }
+      );
+      const data = await response.json();
+      console.log(data.message);
+      onDelete();
+      // Add any additional logic or UI updates after successful deletion
+    } catch (error) {
+      console.log("Error deleting Recipe ingredient", error);
+      console.log(error.message);
+    }
   };
 
   const fetchIngredients = async () => {
@@ -68,7 +68,7 @@ export default function AddRecipeIngredientRow({
         <Text>{ingredients.Name}</Text>
       </View>
       <TouchableOpacity>
-        <TrashIcon size={20} color="#000" onPress={handleDeleteIngredient} />
+        <TrashIcon size={20} color="#000" onPress={handleDeleteRecipeIngredient} />
       </TouchableOpacity>
     </View>
   );

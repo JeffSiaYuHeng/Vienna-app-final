@@ -15,7 +15,7 @@ import jwt_decode from "jwt-decode";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/core";
 
-const AddReviewComponent = ({ RecipeID, onClose0 }) => {
+const AddReviewComponent = ({ RecipeID, onClose }) => {
   const [selectedRate, setSelectedRate] = useState(1); // Initial rating value
   const [comment, setComment] = useState(""); // Review comment
   const [userId, setUserId] = useState(null);
@@ -39,7 +39,7 @@ const AddReviewComponent = ({ RecipeID, onClose0 }) => {
 
   const handleAddReview = () => {
     if (comment.trim() === "") {
-      Alert.alert("Empty Field", "Please enter a review name.");
+      Alert.alert("Empty Field", "Please enter a Comment.");
       return;
     }
 
@@ -52,7 +52,7 @@ const AddReviewComponent = ({ RecipeID, onClose0 }) => {
     };
 
     axios
-      .post(`http://${IP_ADDRESS}:8000/api/reviews`, newReview)
+      .post(`http://${IP_ADDRESS}:8000/api/recipeReviews`, newReview)
       .then((response) => {
         console.log("API Response:", response);
         Alert.alert("Review Added", "New review added successfully");
@@ -74,7 +74,7 @@ const AddReviewComponent = ({ RecipeID, onClose0 }) => {
   };
 
   return (
-    <View className="absolute top-[100] w-screen h-screen items-center ">
+    <View className="absolute z-20 ml-[-20px] mt-[-250px] w-screen h-screen items-center">
       <View
         className="w-[300px] rounded-xl bg-white p-4 pt-0 gap-y-4"
         style={styles.cardContainer}

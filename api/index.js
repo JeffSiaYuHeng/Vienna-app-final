@@ -42,6 +42,8 @@ const allergenRoutes = require("./routes/allergenRoutes"); // Import the new all
 const userAllergenRoutes = require("./routes/userAllergenRoutes"); // Import the new userAllergen route
 const recipeIngredientRoutes = require("./routes/recipeIngredientRoutes"); // Adjust the path as needed
 const ingredientRoutes = require("./routes/ingredientRoutes"); // Adjust the path as needed
+const IngredientSearchRoutes = require("./routes/IngredientSearchRoutes"); // Adjust the path as needed
+const notificationRoutes = require("./routes/notificationRoutes"); // Adjust the path as needed
 
 // Use routes
 app.use("/api/users", userRoutes);
@@ -59,6 +61,8 @@ app.use("/api/allergen", allergenRoutes); // Use the new allergen route
 app.use("/api/userAllergen", userAllergenRoutes); // Use the new userAllergen route
 app.use("/api/recipeIngredients", recipeIngredientRoutes);
 app.use("/api/ingredients", ingredientRoutes);
+app.use("/api/IngredientSearch", IngredientSearchRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 
 

@@ -8,25 +8,9 @@ import jwt_decode from "jwt-decode";
 import IP_ADDRESS from "../config"; // Adjust the path as needed
 import { ActivityIndicator } from "react-native";
 import RecipeIngredientSmallBox from "./RecipeIngredientSmallBox";
+import { RenderStartWidgets } from "./RenderStartWidgets";
 //rating system
-export function RatingIcon({ rating }) {
-  const renderStars = () => {
-    const stars = [];
-    for (let i = 0; i < rating; i++) {
-      stars.push(
-        <StarIcon
-          key={i}
-          style={{ marginRight: 2 }}
-          color="#87C17C"
-          size={15}
-        />
-      );
-    }
-    return stars;
-  };
 
-  return <View className="flex-row pl-1">{renderStars()}</View>;
-}
 
 //main part
 export default function RecipeCard({
@@ -34,7 +18,6 @@ export default function RecipeCard({
   imgUrl,
   Title,
   Description,
-  rates,
   date,
   Calorie,
   CreatorID,
@@ -151,7 +134,6 @@ export default function RecipeCard({
           Title,
           Description,
           formattedDate,
-          rates,
           Calorie,
           username,
           sourceUser,
@@ -193,7 +175,8 @@ export default function RecipeCard({
           <View>
             <Text className="text-gray-600 text-xs ml-1">{formattedDate}</Text>
           </View>
-          <RatingIcon rating={rates} />
+          {/* <RatingIcon /> */}
+          <RenderStartWidgets recipeId={RecipeID}/>
           <View className="flex-row ml-1 items-center py-1">
             <Image source={sourceUser} className="w-4 h-4 rounded-full" />
             <View className="ml-1">

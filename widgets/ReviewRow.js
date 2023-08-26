@@ -34,7 +34,7 @@ const RatingIcon = ({ rating }) => {
   return <View className="flex-row">{renderStars()}</View>;
 };
 
-export default function ReviewRow({ ReviewId, ReviewerID, Comment, Rates }) {
+export default function ReviewRow({ onClose, ReviewId, ReviewerID, Comment, Rates }) {
   const [reviewerProfile, setReviewerProfile] = useState(null);
   const [userId, setUserId] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -48,7 +48,7 @@ export default function ReviewRow({ ReviewId, ReviewerID, Comment, Rates }) {
           const userId = decodedToken.userId;
           setUserId(userId);
           const response = await axios.get(
-            `http://${IP_ADDRESS}:8000/user/${ReviewerID}`
+            `http://${IP_ADDRESS}:8000/api/users/user/${ReviewerID}`
           );
           setReviewerProfile(response.data);
           setLoading(false);
@@ -69,6 +69,7 @@ export default function ReviewRow({ ReviewId, ReviewerID, Comment, Rates }) {
       );
       // Show a success message
       Alert.alert("Success", "Comment deleted successfully");
+      onClose();
     } catch (error) {
       console.error("Error deleting comment:", error);
       Alert.alert("Error", "Error deleting the comment");

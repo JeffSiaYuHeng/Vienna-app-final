@@ -16,41 +16,41 @@ import axios from "axios";
 import IP_ADDRESS from "../../config"; // Adjust the path as needed
 import AddInstructionComponents from "../../components/AddInstructionComponents"; // Import the component
 import AddIngredientComponents from "../../components/AddIngredientComponents";
-import AddIngredientRow from "../../widgets/AddRecipeIngredientRow";
+import AddRecipeIngredientRow from "../../widgets/AddRecipeIngredientRow";
 
 const InstructionIngredient = ({ route }) => {
   const { recipeId } = route.params;
   const navigation = useNavigation();
 
-  // const [ingredients, setIngredients] = useState([]);
-  const [showAddIngredient, setShowAddIngredient] = useState(false);
-  const toggleAddIngredient = () => {
-    setShowAddIngredient(!showAddIngredient);
+  const [recipeIngredients, setRecipeIngredients] = useState([]);
+  const [showAddRecipeIngredient, setShowAddRecipeIngredient] = useState(false);
+  const toggleAddRecipeIngredient = () => {
+    setShowAddRecipeIngredient(!showAddRecipeIngredient);
   };
 
-  const closeAddIngredient = async () => {
-    // try {
-    //   // Refresh the page
-    //   const response = await axios.get(
-    //     `http://${IP_ADDRESS}:8000/api/ingredients/${recipeId}`
-    //   );
-    //   setIngredients(response.data.Ingredients);
-    // } catch (error) {
-    //   console.error("Error fetching Ingredients", error);
-    // }
-    // setShowAddIngredient(false);
+  const closeAddRecipeIngredient = async () => {
+    try {
+      // Refresh the page
+      const response = await axios.get(
+        `http://${IP_ADDRESS}:8000/api/recipeIngredients/${recipeId}`
+      );
+      setRecipeIngredients(response.data.recipeIngredients);
+    } catch (error) {
+      console.error("Error fetching recipe Ingredients", error);
+    }
+    setShowAddRecipeIngredient(false);
   };
 
   const handleDeleteIngredient = async () => {
-    // try {
-    //   // Refresh the page
-    //   const response = await axios.get(
-    //     `http://${IP_ADDRESS}:8000/api/ingredients/${recipeId}`
-    //   );
-    //   setIngredients(response.data.Ingredients);
-    // } catch (error) {
-    //   console.error("Error fetching Ingredients", error);
-    // }
+    try {
+      // Refresh the page
+      const response = await axios.get(
+        `http://${IP_ADDRESS}:8000/api/recipeIngredients/${recipeId}`
+      );
+      setRecipeIngredients(response.data.recipeIngredients);
+    } catch (error) {
+      console.error("Error fetching recipeIngredients", error);
+    }
   };
 
   const [instructions, setInstructions] = useState([]);
@@ -76,15 +76,15 @@ const InstructionIngredient = ({ route }) => {
     const fetchRecipeIngredient = async () => {
       try {
         const response = await axios.get(
-          `http://${IP_ADDRESS}:8000/api/ingredients/${recipeId}`
+          `http://${IP_ADDRESS}:8000/api/recipeIngredients/${recipeId}`
         );
-        setIngredients(response.data.Ingredients);
+        setRecipeIngredients(response.data.recipeIngredients);
       } catch (error) {
-        console.error("Error fetching Ingredients", error);
+        console.error("Error fetching recipeIngredients", error);
       }
     };
 
-    fetchIngredients();
+    fetchRecipeIngredient();
 
     const fetchInstructions = async () => {
       try {
@@ -113,7 +113,7 @@ const InstructionIngredient = ({ route }) => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-CF4FFF5 ">
+    <SafeAreaView className="flex-1 bg-CF4FFF5 pb-14">
       <LinearGradient
         colors={["#7caf75", "#6db29a"]} // Adjust the gradient colors as needed
         start={[0, 0]} // Starting point (optional, default is [0,0])
@@ -132,7 +132,7 @@ const InstructionIngredient = ({ route }) => {
         >
           <Text className="text-lg font-bold">Ingredient</Text>
           <TouchableOpacity
-            onPress={toggleAddIngredient}
+            onPress={toggleAddRecipeIngredient}
             className="mt-1 items-center flex-row justify-between px-3 h-6 ml-1 w-28 bg-CC5ECBE rounded-lg"
           >
             <PlusIcon size={16} color="#2B5708" />
@@ -140,18 +140,18 @@ const InstructionIngredient = ({ route }) => {
               Add Ingredient
             </Text>
           </TouchableOpacity>
-          {/* {ingredients.length > 0 ? (
-            ingredients.map((ingredient) => (
-              <AddIngredientRow
-                key={ingredient._id} // Use a unique identifier from your data here
-                IngredientID={ingredient._id}
-                IngredientName={ingredient.IngredientName}
+          {recipeIngredients.length > 0 ? (
+            recipeIngredients.map((recipeIngredient) => (
+              <AddRecipeIngredientRow
+                key={recipeIngredient._id} // Use a unique identifier from your data here
+                recipeIngredientID={recipeIngredient._id}
+                IngredientId={recipeIngredient.RecipeIngredientId}
                 onDelete={handleDeleteIngredient}
               />
             ))
           ) : (
             <Text className="ml-2">No ingredients found.</Text>
-          )} */}
+          )}
         </View>
 
         <View
@@ -192,10 +192,10 @@ const InstructionIngredient = ({ route }) => {
         />
       )}
 
-      {showAddIngredient && (
+      {showAddRecipeIngredient && (
         <AddIngredientComponents
           recipeId={recipeId}
-          onClose={closeAddIngredient}
+          onClose={closeAddRecipeIngredient}
         />
       )}
       <View className="absolute bottom-4 left-4 ">
@@ -242,4 +242,3 @@ const styles = StyleSheet.create({
 });
 
 export default InstructionIngredient;
-

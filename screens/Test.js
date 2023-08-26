@@ -18,8 +18,8 @@ import AddInstructionComponents from "../components/AddInstructionComponents"; /
 import AddIngredientComponents from "../components/AddIngredientComponents";
 import AddRecipeIngredientRow from "../widgets/AddRecipeIngredientRow";
 
-const InstructionIngredient = () => {
-  const recipeId = "64dd8caa86deb1ba18586d87";
+const InstructionIngredient = ({ route }) => {
+  const { recipeId } = route.params;
   const navigation = useNavigation();
 
   const [recipeIngredients, setRecipeIngredients] = useState([]);
@@ -111,7 +111,6 @@ const InstructionIngredient = () => {
       console.error("Error fetching instructions", error);
     }
   };
-
 
   return (
     <SafeAreaView className="flex-1 bg-CF4FFF5 pb-14">

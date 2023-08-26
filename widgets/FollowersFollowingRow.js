@@ -26,7 +26,7 @@ export default function FollowersFollowingRow({ UserId }) {
     const fetchUserProfile = async () => {
       try {
         const response = await axios.get(
-          `http://${IP_ADDRESS}:8000/user/${UserId}`
+          `http://${IP_ADDRESS}:8000/api/users/user/${UserId}`
         );
         setUserProfile(response.data);
         setLoading(false);
@@ -57,6 +57,7 @@ export default function FollowersFollowingRow({ UserId }) {
   } else {
     imageSource = source;
   }
+
   return (
     <View
       className="w-full h-12 bg-white rounded-[5] mt-3 px-4 flex-row items-center "
@@ -76,7 +77,7 @@ export default function FollowersFollowingRow({ UserId }) {
                     </Text> */}
           </View>
         </View>
-        <FollowButton creatorId={creatorId} />
+        <FollowButton creatorId={UserId} />
       </View>
     </View>
   );

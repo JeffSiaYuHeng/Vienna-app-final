@@ -20,4 +20,12 @@ router.get(
 // Fetch RecipeLikes by userId
 router.get("/byUser", recipeLikeController.getRecipeLikesByUserId);
 
+
+// Fetch RecipeLikes by RecipeID and UserID
+router.get(
+  "/byRecipeAndUser/:recipeId/:userId",
+  recipeLikeController.getRecipeLikesByRecipeIdAndUserId
+);
+
+
 module.exports = router;

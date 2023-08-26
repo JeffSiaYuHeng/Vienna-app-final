@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
+import { useNavigation } from "@react-navigation/native";
 import {
   View,
   SafeAreaView,
@@ -11,23 +12,15 @@ import {
   Alert,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { Cog6ToothIcon } from "react-native-heroicons/outline";
-import { PencilSquareIcon, CameraIcon } from "react-native-heroicons/solid";
+import { CameraIcon } from "react-native-heroicons/solid";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwt_decode from "jwt-decode";
 import IP_ADDRESS from "../../config"; // Adjust the path as needed
 import * as ImagePicker from "expo-image-picker";
-import { useNavigation } from "@react-navigation/native";
 
 export default function InitialUserProfile() {
   const navigation = useNavigation();
-
-  useEffect(() => {
-    navigation.setOptions({
-      headerShown: false,
-    });
-  }, []);
 
   const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -35,6 +28,14 @@ export default function InitialUserProfile() {
   const [userImage, setUserImage] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [userId, setUserId] = useState("");
+  useEffect(() => {
+    if (userProfile) {
+      setFirstName(userProfile.firstName || "");
+      setLastName(userProfile.lastName || "");
+      // ... set other state variables here ...
+    }
+  }, [userProfile]);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -42,8 +43,9 @@ export default function InitialUserProfile() {
         const token = await AsyncStorage.getItem("authToken");
         const decodedToken = jwt_decode(token);
         const userId = decodedToken.userId;
+        setUserId(userId);
         const response = await axios.get(
-          `http://${IP_ADDRESS}:8000/user/${userId}`
+          `http://${IP_ADDRESS}:8000/api/users/user/${userId}`
         );
         setUserProfile(response.data);
         setLoading(false);
@@ -63,7 +65,19 @@ export default function InitialUserProfile() {
     );
   }
 
-  const userId = userProfile.userId;
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      // Use "canceled" instead of "cancelled"
+      setUserImage(result.assets[0].uri); // Access the uri from the "assets" array
+    }
+  };
 
   const handleUpdateProfile = () => {
     // Check if any of the fields are empty
@@ -91,7 +105,7 @@ export default function InitialUserProfile() {
     const updatedProfileData = new FormData(); // Create a new FormData object
     // Append userImage to FormData only if it's not empty
     if (userImage) {
-      updatedProfileData.append("image", {
+      updatedProfileData.append("userImage", {
         uri: userImage,
         type: "image/jpeg",
         name: "profile.jpg", // Adjust the file name as needed
@@ -103,7 +117,7 @@ export default function InitialUserProfile() {
 
     axios
       .put(
-        `http://${IP_ADDRESS}:8000/updateProfile/${userId}`,
+        `http://${IP_ADDRESS}:8000/api/users/updateProfile/${userId}`,
         updatedProfileData,
         {
           headers: {
@@ -135,19 +149,13 @@ export default function InitialUserProfile() {
       });
   };
 
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
-    });
+  const imageUrl = userProfile.UserImage;
+  const cleanedImageUrl = imageUrl ? imageUrl.replace(/\\/g, "/") : ""; // Replace backslashes with forward slashes
+  const filename = cleanedImageUrl ? cleanedImageUrl.split("/").pop() : ""; // Add a conditional check
 
-    if (!result.canceled) {
-      // Use "canceled" instead of "cancelled"
-      setUserImage(result.assets[0].uri); // Access the uri from the "assets" array
-    }
-  };
+  const source = userImage
+    ? userImage
+    : `http://${IP_ADDRESS}:8000/api/files/${filename}`;
 
   return (
     <SafeAreaView className="flex-1 bg-CF4FFF5 ">
@@ -182,9 +190,9 @@ export default function InitialUserProfile() {
             className="w-[100] h-[100] bg-gray-300 justify-center items-center rounded-full"
           >
             <View className="w-[100] h-[100] bg-gray-300 justify-center items-center rounded-full">
-              {userImage ? (
+              {source ? (
                 <Image
-                  source={{ uri: userImage }}
+                  source={{ uri: source }}
                   className="w-[100] h-[100] bg-gray-300 justify-center items-center rounded-full"
                 />
               ) : (

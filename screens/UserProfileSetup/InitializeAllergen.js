@@ -33,7 +33,7 @@ export default function InitializeAllergen() {
       const userId = decodedToken.userId;
 
       const response = await axios.put(
-        `http://${IP_ADDRESS}:8000/user/${userId}/activate`
+        `http://${IP_ADDRESS}:8000/api/users/user/${userId}/activate`
       );
       console.log("User activated successfully:", response.data);
       navigation.navigate("TabNavigator");
@@ -130,7 +130,7 @@ export default function InitializeAllergen() {
       );
 
       console.log("User Allergen Creation Response:", response.data);
-      Alert.alert("Successful", "Your Dietary Restriction are Added");
+      Alert.alert("Successful", "Your Allergen are Added");
       activateUser();
       // navigation.navigate("NextScreen"); // Replace "NextScreen" with your screen name
     } catch (error) {

@@ -1,5 +1,9 @@
 import React, { useEffect, useState, useContext } from "react";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
 import {
   View,
   SafeAreaView,
@@ -8,6 +12,7 @@ import {
   Image,
   StyleSheet,
   ActivityIndicator,
+  ScrollView,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Cog6ToothIcon } from "react-native-heroicons/outline";
@@ -16,6 +21,8 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwt_decode from "jwt-decode";
 import IP_ADDRESS from "../../config"; // Adjust the path as needed
+import RecipeCard from "../../widgets/RecipeCard";
+import FollowButton from "../../widgets/FollowButton";
 
 export default function OthersProfile({ route }) {
   const {
@@ -25,7 +32,7 @@ export default function OthersProfile({ route }) {
   const othersId = CreatorID;
 
   const navigation = useNavigation();
-
+  const [recipes, setRecipes] = useState([]);
   const [othersProfile, setOthersProfile] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -33,7 +40,7 @@ export default function OthersProfile({ route }) {
     const fetchUserProfile = async () => {
       try {
         const response = await axios.get(
-          `http://${IP_ADDRESS}:8000/user/${othersId}`
+          `http://${IP_ADDRESS}:8000/api/users/user/${othersId}`
         );
         setOthersProfile(response.data);
       } catch (error) {
@@ -60,6 +67,74 @@ export default function OthersProfile({ route }) {
     imageSource = source;
   }
 
+  useEffect(() => {
+    // Fetch recipes from the database
+    const refreshPage = navigation.addListener("focus", () => {
+      const fetchRecipes = async () => {
+        try {
+          const token = await AsyncStorage.getItem("authToken");
+          const decodedToken = jwt_decode(token);
+          const userId = decodedToken.userId;
+          if (!userId) {
+            console.error("User ID is null or undefined");
+            return;
+          }
+          const response = await axios.get(
+            `http://${IP_ADDRESS}:8000/api/recipes/user/${CreatorID}`
+          );
+          setRecipes(response.data.recipes);
+          setLoading(false);
+        } catch (error) {
+          console.error("Error fetching recipes", error);
+        }
+      };
+      fetchRecipes();
+    });
+    return refreshPage;
+  }, []);
+
+  // Create variable that only can access by Set
+  const [recipeLikes, setRecipeLikes] = useState([]);
+  const [followeds, setFollowed] = useState([]);
+  const [followers, setFollower] = useState([]);
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchData = async () => {
+        try {
+          // Fetch Recipe Likes
+          const recipeLikesResponse = await axios.get(
+            `http://${IP_ADDRESS}:8000/api/recipeLikes/byUser?userId=${CreatorID}`
+          );
+          setRecipeLikes(recipeLikesResponse.data);
+
+          // Fetch Followed
+          const followedResponse = await axios.get(
+            `http://${IP_ADDRESS}:8000/api/userFollow/followed?userId=${CreatorID}`
+          );
+          if (followedResponse.data) {
+            setFollowed(followedResponse.data);
+          }
+
+          // Fetch Followers
+          const followerResponse = await axios.get(
+            `http://${IP_ADDRESS}:8000/api/userFollow/follower?userId=${CreatorID}`
+          );
+          if (followerResponse.data) {
+            setFollower(followerResponse.data);
+          }
+        } catch (error) {
+          console.log("Error fetching data", error);
+        }
+      };
+
+      fetchData();
+    }, [])
+  );
+
+  const LikeCount = recipeLikes.length;
+  const FollowingCount = followeds.length;
+  const FollowersCount = followers.length;
+
   return (
     <SafeAreaView className="flex-1 bg-CF4FFF5 ">
       <LinearGradient
@@ -74,41 +149,74 @@ export default function OthersProfile({ route }) {
           <XMarkIcon size={20} color="#000" />
         </TouchableOpacity>
       </LinearGradient>
-
       <View className="w-100 p-2 pt-4 ">
         <View
-          className="w-100 h-56 rounded-xl bg-white items-center pt-4"
+          className="w-100 h-fit rounded-xl bg-white items-center pt-4"
           style={styles.cardContainer}
         >
-          <View>
+          <View className="items-center">
             <Image
               source={imageSource}
               className="w-20 h-20 rounded-full self-center"
             />
             <Text className="pt-2 text-center">{username}</Text>
             <Text className="pt-2 text-center">{email}</Text>
+            <FollowButton creatorId={CreatorID} />
           </View>
 
           <View className="flex-row w-full h-20 p-3 pt-6 justify-around">
-            {/* <View className="w-20 h-18 justify-center  text-center items-center">
+            <View className=" border-gray-200 w-20 h-18 justify-center  text-center items-center">
               <Text className="text-gray-600 font-bold">Followers</Text>
-              <Text>23</Text>
+              <Text>{!FollowersCount ? "0" : FollowersCount}</Text>
+            </View>
+            <View className="border-l-[1px] border-r-[1px] border-gray-200 w-20 h-18 justify-center  text-center items-center">
+              <Text className="text-gray-600 font-bold">Following</Text>
+              <Text>{!FollowingCount ? "0" : FollowingCount}</Text>
             </View>
             <View className="w-20 h-18 justify-center  text-center items-center">
-              <Text className="text-gray-600 font-bold">Followers</Text>
-              <Text>23</Text>
-            </View> */}
-            <TouchableOpacity
-              onPress={() => navigation.navigate("UserLikedRecipe")}
-              className="border-l-[1px] border-r-[1px] border-gray-200 w-20 h-18 justify-center  text-center items-center"
-            >
               <Text className="text-gray-600 font-bold">Likes</Text>
-              {/* <Text>{!LikeCount ? "0":LikeCount}</Text> */}
-              <Text>0</Text>
-            </TouchableOpacity>
+              <Text>{!LikeCount ? "0" : LikeCount}</Text>
+            </View>
           </View>
         </View>
       </View>
+      <View className="w-100 items-center justify-center">
+        <Text className="font-bold text-C2B5708 text-lg py-2">
+          {othersProfile.username}'s Recipes
+        </Text>
+      </View>
+      <ScrollView
+        className="p-5"
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingBottom: 10,
+          marginBottom: 30,
+        }}
+      >
+        {recipes.length > 0 ? (
+          recipes.map((recipe, index) => (
+            <RecipeCard
+              key={recipe._id} // This should be category._id
+              RecipeID={recipe._id} // This should be category._i
+              imgUrl={recipe.image}
+              Title={recipe.title || "Unknown Title"}
+              date={recipe.createdAt}
+              Description={recipe.description || "No description available"}
+              rates={5}
+              Calorie={recipe.calorie}
+              CreatorID={recipe.creatorUser}
+              Recipe_View={150}
+              Cooking_Time={recipe.cookingTime || "Unknown Time"}
+              Difficulty_Level={recipe.difficultyLevel || "Unknown Level"}
+              Like={15}
+            />
+          ))
+        ) : (
+          <View className="w-100 items-center">
+            <Text>No Recipe found.</Text>
+          </View>
+        )}
+      </ScrollView>
     </SafeAreaView>
   );
 }

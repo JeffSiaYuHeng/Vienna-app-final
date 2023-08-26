@@ -8,6 +8,7 @@ import {
   Image,
   StyleSheet,
   ActivityIndicator,
+  ScrollView,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Cog6ToothIcon } from "react-native-heroicons/outline";
@@ -16,12 +17,14 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwt_decode from "jwt-decode";
 import IP_ADDRESS from "../../config"; // Adjust the path as needed
+import RecipeCard from "../../widgets/RecipeCard";
 
 export default function AccountScreens() {
   const navigation = useNavigation();
 
   const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [recipes, setRecipes] = useState([]);
 
   //This Part of Code is used to fetch the userDetail and Check if it Initialize
   useFocusEffect(
@@ -39,11 +42,11 @@ export default function AccountScreens() {
           setUserProfile(user);
           setLoading(false);
 
-          // // Check if the user's initialStatus is "Inactive"
-          // if (user.initialStatus === "Inactive") {
-          //   // Navigate to the "InitializeProfile" screen
-          //   navigation.navigate("InitialUserProfile");
-          // }
+          // Check if the user's initialStatus is "Inactive"
+          if (user.initialStatus === "Inactive") {
+            // Navigate to the "InitializeProfile" screen
+            navigation.navigate("InitialUserProfile");
+          }
         } catch (error) {
           console.log("Error fetching user profile", error);
         }
@@ -52,6 +55,31 @@ export default function AccountScreens() {
       fetchUserProfile();
     }, [navigation])
   );
+
+  useEffect(() => {
+    // Fetch recipes from the database
+    const refreshPage = navigation.addListener("focus", () => {
+      const fetchRecipes = async () => {
+        try {
+          const token = await AsyncStorage.getItem("authToken");
+          const decodedToken = jwt_decode(token);
+          const userId = decodedToken.userId;
+          if (!userId) {
+            console.error("User ID is null or undefined");
+            return;
+          }
+          const response = await axios.get(
+            `http://${IP_ADDRESS}:8000/api/recipes/user/${userId}`
+          );
+          setRecipes(response.data.recipes);
+        } catch (error) {
+          console.error("Error fetching recipes", error);
+        }
+      };
+      fetchRecipes();
+    });
+    return refreshPage;
+  }, []);
 
   // Create variable that only can access by Set
   const [recipeLikes, setRecipeLikes] = useState([]);
@@ -204,6 +232,43 @@ export default function AccountScreens() {
           </View>
         </View>
       </View>
+      <View className="w-100 items-center justify-center">
+        <Text className="font-bold text-C2B5708 text-lg py-2">
+          Your's Recipes
+        </Text>
+      </View>
+      <ScrollView
+        className="p-5"
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingBottom: 10,
+          marginBottom: 30,
+        }}
+      >
+        {recipes.length > 0 ? (
+          recipes.map((recipe, index) => (
+            <RecipeCard
+              key={recipe._id} // This should be category._id
+              RecipeID={recipe._id} // This should be category._i
+              imgUrl={recipe.image}
+              Title={recipe.title || "Unknown Title"}
+              date={recipe.createdAt}
+              Description={recipe.description || "No description available"}
+              rates={5}
+              Calorie={recipe.calorie}
+              CreatorID={recipe.creatorUser}
+              Recipe_View={150}
+              Cooking_Time={recipe.cookingTime || "Unknown Time"}
+              Difficulty_Level={recipe.difficultyLevel || "Unknown Level"}
+              Like={15}
+            />
+          ))
+        ) : (
+          <View className="w-100 items-center">
+            <Text>No Recipe found.</Text>
+          </View>
+        )}
+      </ScrollView>
     </SafeAreaView>
   );
 }

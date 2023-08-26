@@ -4,6 +4,7 @@ import { StarIcon, HeartIcon, FireIcon } from "react-native-heroicons/solid";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import IP_ADDRESS from "../config"; // Adjust the path as needed
+import RecipeIngredientSmallBox from "./RecipeIngredientSmallBox";
 
 //rating system
 export function RatingIcon({ rating }) {
@@ -47,23 +48,45 @@ export default function MyRecipeCard({
   const source = { uri: `http://${IP_ADDRESS}:8000/api/files/${filename}` };
   const imgUrlSource = source;
 
-  const [ingredients, setIngredients] = useState([]);
+  const [recipeIngredients, setRecipeIngredients] = useState([]);
+  const [recipeLikes, setRecipeLikes] = useState([]);
 
-  // useFocusEffect(
-  //   React.useCallback(() => {
-  //     const fetchIngredients = async () => {
-  //       try {
-  //         const response = await axios.get(
-  //           `http://${IP_ADDRESS}:8000/api/ingredients/${RecipeID}`
-  //         );
-  //         setIngredients(response.data.Ingredients);
-  //       } catch (error) {
-  //         console.error("Error fetching Ingredients", error);
-  //       }
-  //     };
-  //     fetchIngredients();
-  //   }, []) // Dependency array includes RecipeID
-  // );
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchRecipeIngredient = async () => {
+        try {
+          const response = await axios.get(
+            `http://${IP_ADDRESS}:8000/api/recipeIngredients/${RecipeID}`
+          );
+          setRecipeIngredients(response.data.recipeIngredients);
+        } catch (error) {
+          console.error("Error fetching recipeIngredients", error);
+        }
+      };
+
+      fetchRecipeIngredient();
+    }, []) // Dependency array includes RecipeID
+  );
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchRecipeLikesByRecipeId = async () => {
+        try {
+          const response = await axios.get(
+            `http://${IP_ADDRESS}:8000/api/recipeLikes/byRecipe/${RecipeID}`
+          );
+
+          setRecipeLikes(response.data);
+        } catch (error) {
+          console.log("Error fetching RecipeLikes by RecipeID", error);
+        }
+      };
+
+      fetchRecipeLikesByRecipeId();
+    }, [RecipeID]) // Dependency array includes RecipeID
+  );
+
+  const totalRecipeLikes = recipeLikes.length;
 
   const formattedDate = new Date(date).toLocaleDateString("en-US", {
     day: "numeric",
@@ -101,7 +124,9 @@ export default function MyRecipeCard({
         <View className="absolute mt-1 flex-row w-28 justify-around">
           <View className="flex-row items-center justify-center px-2 h-5 bg-CEFA8C2 rounded-xl">
             <HeartIcon size={10} color="#ffffff" />
-            <Text className="text-white font-bold text-xs">{Like}</Text>
+            <Text className="text-white font-bold text-xs">
+              {totalRecipeLikes}
+            </Text>
           </View>
 
           <View className="  flex items-center justify-center px-1 h-5 ml-1 bg-C9BC17C rounded">
@@ -132,16 +157,13 @@ export default function MyRecipeCard({
           </View>
           <View className="flex-row">
             <View className="flex-row  mt-1 ">
-              {ingredients.length > 0 ? (
-                ingredients.slice(0, 3).map((ingredient, index) => (
-                  <View
-                    key={index}
-                    className="flex items-center justify-center px-1 h-5 ml-1 bg-CDEE8B5 rounded"
-                  >
-                    <Text className="text-C645623 text-xs">
-                      {ingredient.IngredientName}
-                    </Text>
-                  </View>
+              {recipeIngredients.length > 0 ? (
+                recipeIngredients.slice(0, 3).map((recipeIngredient) => (
+                  <RecipeIngredientSmallBox
+                    key={recipeIngredient._id} // Use a unique identifier from your data here
+                    recipeIngredientID={recipeIngredient._id}
+                    IngredientId={recipeIngredient.RecipeIngredientId}
+                  />
                 ))
               ) : (
                 <Text className="ml-2"></Text>

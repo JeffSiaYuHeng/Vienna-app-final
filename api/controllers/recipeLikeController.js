@@ -74,10 +74,32 @@ const getRecipeLikesByUserId = async (req, res) => {
     res.status(500).json({ message: "Error fetching RecipeLikes!" });
   }
 };
+const getRecipeLikesByRecipeIdAndUserId = async (req, res) => {
+  const { recipeId, userId } = req.params;
+  try {
+    // Find a RecipeLike that matches the RecipeID and userId
+    const recipeLike = await RecipeLike.findOne({
+      RecipeID: recipeId,
+      userId,
+    });
+
+    if (!recipeLike) {
+      // Respond with a message indicating no match was found
+    }
+
+    console.log(recipeLike);
+    // Respond with the found RecipeLike
+    return res.status(200).json(recipeLike);
+  } catch (error) {
+    console.log("Error fetching RecipeLike", error);
+    return res.status(500).json({ message: "Error fetching the RecipeLike!" });
+  }
+};
 
 module.exports = {
   createRecipeLike,
   deleteRecipeLike,
   getRecipeLikesByRecipeId,
   getRecipeLikesByUserId,
+  getRecipeLikesByRecipeIdAndUserId, // Add the new function to the exports
 };

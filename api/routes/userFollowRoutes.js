@@ -20,4 +20,6 @@ router.get("/followed", userFollowController.getUsersFollowed);
 // Fetch followers of a specific user by their UserID
 router.get("/follower", userFollowController.getFollowers);
 
+
+
 module.exports = router;

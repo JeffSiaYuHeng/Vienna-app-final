@@ -21,25 +21,27 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import IP_ADDRESS from "../../config"; // Adjust the path as needed
 import { ChevronRightIcon } from "react-native-heroicons/outline";
+import RecipeIngredientSmallBox from "../../widgets/RecipeIngredientSmallBox";
+import RecipeIngredientRow from "../../widgets/RecipeIngredientRow";
 
 export function RatingIcon({ rating }) {
-    const renderStars = () => {
-      const stars = [];
-      for (let i = 0; i < rating; i++) {
-        stars.push(
-          <StarIcon
-            key={i}
-            style={{ marginRight: 2 }}
-            color="#87C17C"
-            size={15}
-          />
-        );
-      }
-      return stars;
-    };
-  
-    return <View className="flex-row pl-1">{renderStars()}</View>;
-  }
+  const renderStars = () => {
+    const stars = [];
+    for (let i = 0; i < rating; i++) {
+      stars.push(
+        <StarIcon
+          key={i}
+          style={{ marginRight: 2 }}
+          color="#87C17C"
+          size={15}
+        />
+      );
+    }
+    return stars;
+  };
+
+  return <View className="flex-row pl-1">{renderStars()}</View>;
+}
 
 const Test = () => {
   const navigation = useNavigation();
@@ -48,43 +50,28 @@ const Test = () => {
       RecipeID,
       imgUrlSource,
       Title,
-      Description,
       formattedDate,
-      rates,
       Calorie,
-      Recipe_View,
-      user_img,
-      username,
-      ingredient_1,
-      ingredient_2,
-      ingredient_3,
       formattedCookingTime,
       Difficulty_Level,
-      Like,
     },
   } = useRoute();
-  const [ingredients, setIngredients] = useState([]);
+  const [recipeIngredients, setRecipeIngredients] = useState([]);
   const [instructions, setInstructions] = useState([]);
 
   useEffect(() => {
-    navigation.setOptions({
-      headerShown: false,
-    });
-  }, []);
+    const fetchRecipeIngredient = async () => {
+      try {
+        const response = await axios.get(
+          `http://${IP_ADDRESS}:8000/api/recipeIngredients/${RecipeID}`
+        );
+        setRecipeIngredients(response.data.recipeIngredients);
+      } catch (error) {
+        console.error("Error fetching recipeIngredients", error);
+      }
+    };
 
-  useEffect(() => {
-    // const fetchIngredients = async () => {
-    //   try {
-    //     const response = await axios.get(
-    //       `http://${IP_ADDRESS}:8000/api/ingredients/${RecipeID}`
-    //     );
-    //     setIngredients(response.data.Ingredients);
-    //   } catch (error) {
-    //     console.error("Error fetching Ingredients", error);
-    //   }
-    // };
-
-    // fetchIngredients();
+    fetchRecipeIngredient();
 
     const fetchInstructions = async () => {
       try {
@@ -140,6 +127,11 @@ const Test = () => {
         className="flex p-4 pt-10 justify-center flex-row w-full h-[80]  items-center"
       >
         <Text className="text-lg font-bold text-white">{Title}</Text>
+        <View className="flex items-center justify-center px-1 h-5 ml-1 bg-C9BC17C rounded">
+          <Text className="text-white font-bold text-xs">
+            {formattedCookingTime}
+          </Text>
+        </View>
       </LinearGradient>
       <ScrollView className="w-100 p-4">
         <View style={styles.cardContainer} className="p-4">
@@ -157,11 +149,6 @@ const Test = () => {
               <View className="flex-row items-center">
                 <View className="mr-1">
                   <Text className="font-bold text-lg text-black">{Title}</Text>
-                </View>
-                <View className="flex items-center justify-center px-1 h-5 ml-1 bg-C9BC17C rounded">
-                  <Text className="text-white font-bold text-xs">
-                    {formattedCookingTime}
-                  </Text>
                 </View>
               </View>
               <View>
@@ -183,16 +170,13 @@ const Test = () => {
 
               <View className="flex-row mt-1">
                 <View className="flex-row">
-                  {ingredients.length > 0 ? (
-                    ingredients.slice(0, 3).map((ingredient, index) => (
-                      <View
-                        key={index}
-                        className="flex items-center justify-center px-1 h-5 ml-1 bg-CEEDDA0 rounded"
-                      >
-                        <Text className="text-C645623 text-xs">
-                          {ingredient.IngredientName}
-                        </Text>
-                      </View>
+                  {recipeIngredients.length > 0 ? (
+                    recipeIngredients.slice(0, 3).map((recipeIngredient) => (
+                      <RecipeIngredientSmallBox
+                        key={recipeIngredient._id} // Use a unique identifier from your data here
+                        recipeIngredientID={recipeIngredient._id}
+                        IngredientId={recipeIngredient.RecipeIngredientId}
+                      />
                     ))
                   ) : (
                     <Text className="ml-2"></Text>
@@ -224,14 +208,13 @@ const Test = () => {
 
               {!isCollapsedIngredient && (
                 <View className="pt-1 flex w-full">
-                  {ingredients.length > 0 ? (
-                    ingredients.map((ingredient, index) => (
-                      <View
-                        key={index}
-                        className="flex-row items-center justify-between w-full bg-gray-100 px-2 my-2 rounded-l py-1"
-                      >
-                        <Text>{ingredient.IngredientName}</Text>
-                      </View>
+                  {recipeIngredients.length > 0 ? (
+                    recipeIngredients.map((recipeIngredient) => (
+                      <RecipeIngredientRow
+                        key={recipeIngredient._id} // Use a unique identifier from your data here
+                        recipeIngredientID={recipeIngredient._id}
+                        IngredientId={recipeIngredient.RecipeIngredientId}
+                      />
                     ))
                   ) : (
                     <Text className="ml-2">No ingredients found.</Text>
@@ -306,10 +289,9 @@ const Test = () => {
           <Text className="font-bold text-base text-C642323">Delete</Text>
         </TouchableOpacity>
         <TouchableOpacity
-        
-        onPress={()=>navigation.navigate("EditRecipe",{RecipeID})}
-        
-        className="w-18 bg-C73CEE2 h-8 justify-around px-2 rounded-[5px] items-center flex-row">
+          onPress={() => navigation.navigate("EditRecipe", { RecipeID })}
+          className="w-18 bg-C73CEE2 h-8 justify-around px-2 rounded-[5px] items-center flex-row"
+        >
           <PencilSquareIcon size={18} color="#11434E" />
           <Text className="font-bold text-base text-C11434E">Edit</Text>
         </TouchableOpacity>

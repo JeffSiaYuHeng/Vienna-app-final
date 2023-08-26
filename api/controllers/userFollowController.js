@@ -67,6 +67,7 @@ const getUserFollow = async (req, res) => {
 const getUsersFollowed = async (req, res) => {
   const userId = req.query.userId;
 
+
   try {
     const followed = await UserFollow.find({ FollowerUserID: userId });
 

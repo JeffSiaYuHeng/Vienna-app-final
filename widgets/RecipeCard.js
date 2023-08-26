@@ -7,6 +7,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwt_decode from "jwt-decode";
 import IP_ADDRESS from "../config"; // Adjust the path as needed
 import { ActivityIndicator } from "react-native";
+import RecipeIngredientSmallBox from "./RecipeIngredientSmallBox";
 //rating system
 export function RatingIcon({ rating }) {
   const renderStars = () => {
@@ -51,7 +52,7 @@ export default function RecipeCard({
   const [loading, setLoading] = useState(true);
 
   const [userProfile, setUserProfile] = useState([]);
-  // const [ingredients, setIngredients] = useState([]);
+  const [recipeIngredients, setRecipeIngredients] = useState([]);
   const [recipeLikes, setRecipeLikes] = useState([]);
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -86,28 +87,26 @@ export default function RecipeCard({
     }, [RecipeID]) // Dependency array includes RecipeID
   );
 
-  // const totalRecipeLikes = recipeLikes.length;
+  const totalRecipeLikes = recipeLikes.length;
 
-  const totalRecipeLikes = 12;
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchRecipeIngredient = async () => {
+        try {
+          const response = await axios.get(
+            `http://${IP_ADDRESS}:8000/api/recipeIngredients/${RecipeID}`
+          );
+          setRecipeIngredients(response.data.recipeIngredients);
+          setLoading(false);
+        } catch (error) {
+          console.error("Error fetching recipeIngredients", error);
+          setLoading(false);
+        }
+      };
 
-  // useFocusEffect(
-  //   React.useCallback(() => {
-  //     const fetchIngredients = async () => {
-  //       try {
-  //         const response = await axios.get(
-  //           `http://${IP_ADDRESS}:8000/api/ingredients/${RecipeID}`
-  //         );
-  //         setIngredients(response.data.Ingredients);
-  //         setLoading(false);
-  //       } catch (error) {
-  //         console.error("Error fetching Ingredients", error);
-  //       }
-  //     };
-  //     fetchIngredients();
-  //   }, []) // Dependency array includes RecipeID
-  // );
-
-  // console.log(ingredients);
+      fetchRecipeIngredient();
+    }, []) // Dependency array includes RecipeID
+  );
 
   const imgUrlUser = userProfile.UserImage;
 
@@ -153,11 +152,9 @@ export default function RecipeCard({
           Description,
           formattedDate,
           rates,
-          // ingredients,
           Calorie,
           username,
           sourceUser,
-          Recipe_View,
           CreatorID,
           formattedCookingTime,
           Difficulty_Level,
@@ -205,20 +202,17 @@ export default function RecipeCard({
           </View>
           <View className="flex-row ">
             <View className="flex-row">
-              {/* {ingredients.length > 0 ? (
-                ingredients.slice(0, 3).map((ingredient, index) => (
-                  <View
-                    key={index}
-                    className="flex items-center justify-center px-1 h-5 ml-1 bg-CDEE8B5 rounded"
-                  >
-                    <Text className="text-C645623 text-xs">
-                      {ingredient.IngredientName}
-                    </Text>
-                  </View>
+              {recipeIngredients.length > 0 ? (
+                recipeIngredients.slice(0, 3).map((recipeIngredient) => (
+                  <RecipeIngredientSmallBox
+                    key={recipeIngredient._id} // Use a unique identifier from your data here
+                    recipeIngredientID={recipeIngredient._id}
+                    IngredientId={recipeIngredient.RecipeIngredientId}
+                  />
                 ))
               ) : (
                 <Text className="ml-2"></Text>
-              )} */}
+              )}
             </View>
           </View>
         </View>

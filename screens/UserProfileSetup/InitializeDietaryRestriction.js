@@ -30,7 +30,7 @@ export default function InitializeDietaryRestriction() {
     const fetchDietaryRestriction = async () => {
       try {
         const response = await axios.get(
-          `http://${IP_ADDRESS}:8000/api/dietaryRestriction`
+          `http://${IP_ADDRESS}:8000/api/dietaryRestrictions`
         );
         setDietaryRestrictions(response.data.dietaryRestrictions);
         setLoading(false);

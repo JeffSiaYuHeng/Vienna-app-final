@@ -18,26 +18,6 @@ export default function TrendingComponent() {
 
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    navigation.setOptions({
-      headerShown: false,
-    });
-  }, []);
-
-  useEffect(() => {
-    const fetchRecipes = async () => {
-      try {
-        const response = await axios.get(
-          `http://${IP_ADDRESS}:8000/api/recipes/home`
-        );
-        setRecipes(response.data.recipes);
-      } catch (error) {
-        console.error("Error fetching recipes", error);
-      }
-    };
-
-    fetchRecipes();
-  }, []);
 
   useFocusEffect(
     React.useCallback(() => {

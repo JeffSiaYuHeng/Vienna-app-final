@@ -15,25 +15,27 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwt_decode from "jwt-decode";
 import IP_ADDRESS from "../config"; // Adjust the path as needed
 import axios from "axios";
+import RecipeIngredientRow from "./../widgets/RecipeIngredientRow";
 
 const RecipeToggle = ({ RecipeID }) => {
-  const [ingredients, setIngredients] = useState([]);
+  const [recipeIngredients, setRecipeIngredients] = useState([]);
   const [instructions, setInstructions] = useState([]);
   const [userId, setUserId] = useState(true);
   const [shoppingList, setShoppingList] = useState([]);
 
   useEffect(() => {
-  //   const fetchIngredients = async () => {
-  //     try {
-  //       const response = await axios.get(
-  //         `http://${IP_ADDRESS}:8000/api/ingredients/${RecipeID}`
-  //       );
-  //       setIngredients(response.data.Ingredients);
-  //     } catch (error) {
-  //       console.error("Error fetching Ingredients", error);
-  //     }
-  //   };
-  //   fetchIngredients();
+    const fetchRecipeIngredient = async () => {
+      try {
+        const response = await axios.get(
+          `http://${IP_ADDRESS}:8000/api/recipeIngredients/${RecipeID}`
+        );
+        setRecipeIngredients(response.data.recipeIngredients);
+      } catch (error) {
+        console.error("Error fetching recipeIngredients", error);
+      }
+    };
+
+    fetchRecipeIngredient();
 
     const fetchInstructions = async () => {
       try {
@@ -59,10 +61,12 @@ const RecipeToggle = ({ RecipeID }) => {
         console.error("User ID is not available.");
         return;
       }
-      const newShoppingList = ingredients.map((ingredient) => ({
+      const newShoppingList = recipeIngredients.map((recipeIngredient) => ({
         userID: userId, // Make sure userId is defined
-        itemName: ingredient.IngredientName, // Assuming IngredientName is the property that contains the ingredient name
+        itemName: recipeIngredient.RecipeIngredientId, // Assuming IngredientName is the property that contains the ingredient name
       }));
+
+      console.log(newShoppingList);
 
       if (newShoppingList.some((item) => !item.userID || !item.itemName)) {
         console.error("Invalid shopping list data.");
@@ -73,9 +77,6 @@ const RecipeToggle = ({ RecipeID }) => {
         `http://${IP_ADDRESS}:8000/api/shoppingList/create`,
         newShoppingList
       );
-
-      // Log the successful response data
-      console.log(response.data);
 
       // Update your UI or state with the newly created shopping list
       setShoppingList(newShoppingList);
@@ -133,17 +134,17 @@ const RecipeToggle = ({ RecipeID }) => {
               </TouchableOpacity>
             </View>
             {/* Inner content of the collapsible section */}
-            {/* {ingredients.length > 0 ? (
-              ingredients.map((ingredient) => (
-                <IngredientRow
-                  key={ingredient._id} // Use a unique identifier from your data here
-                  IngredientID={ingredient._id}
-                  IngredientName={ingredient.IngredientName}
+            {recipeIngredients.length > 0 ? (
+              recipeIngredients.map((recipeIngredient) => (
+                <RecipeIngredientRow
+                  key={recipeIngredient._id} // Use a unique identifier from your data here
+                  recipeIngredientID={recipeIngredient._id}
+                  IngredientId={recipeIngredient.RecipeIngredientId}
                 />
               ))
             ) : (
               <Text className="ml-2">No ingredients found.</Text>
-            )} */}
+            )}
           </View>
         )}
       </View>

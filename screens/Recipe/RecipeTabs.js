@@ -63,15 +63,12 @@ export default function RecipeTabs() {
       Description,
       formattedDate,
       rates,
-      ingredients,
       Calorie,
       username,
-      Recipe_View,
       sourceUser,
       CreatorID,
       formattedCookingTime,
       Difficulty_Level,
-      Like,
     },
   } = useRoute();
   const [showRecipeToggle, setShowRecipeToggle] = useState(true);
@@ -93,23 +90,29 @@ export default function RecipeTabs() {
   useEffect(() => {
     const fetchRecipeLike = async () => {
       try {
+        // Get the authentication token from AsyncStorage
         const token = await AsyncStorage.getItem("authToken");
         const decodedToken = jwt_decode(token);
         const userId = decodedToken.userId;
         setUserId(userId);
+
+        // Send a GET request to the server endpoint
         const response = await axios.get(
-          `http://${IP_ADDRESS}:8000/api/recipeLikes?RecipeID=${RecipeID}&userId=${userId}`
+          `http://${IP_ADDRESS}:8000/api/recipeLikes/byRecipeAndUser/${RecipeID}/${userId}`
         );
 
-        if (response.data) {
-          // Check if data exists and the message is not "No records found"
+        if (
+          response.data &&
+          response.data.message !==
+            "No RecipeLikes found for this recipe and user."
+        ) {
           setRecipeLike(response.data);
-          setLoading(false);
-        } else {
-          setLoading(false);
         }
+
+        setLoading(false);
       } catch (error) {
-        console.log("Error fetching recipe like", error);
+        // If there's an error, simply set loading to false without displaying an error message
+        setLoading(false);
       }
     };
 
@@ -174,8 +177,15 @@ export default function RecipeTabs() {
         const decodedToken = jwt_decode(token);
         const userId = decodedToken.userId;
         setUserId(userId);
+
         const response = await axios.get(
-          `http://${IP_ADDRESS}:8000/api/savedRecipes?RecipeID=${RecipeID}&userId=${userId}`
+          `http://${IP_ADDRESS}:8000/api/savedRecipes`,
+          {
+            params: {
+              RecipeID: RecipeID,
+              userId: userId,
+            },
+          }
         );
 
         if (response.data && response.data.message !== "No records found") {

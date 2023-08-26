@@ -5,13 +5,16 @@ import IP_ADDRESS from "../config"; // Adjust the path as needed
 import axios from "axios";
 import { useFocusEffect } from "@react-navigation/native";
 
-export default function ShoppingListRow({ ItemId, itemName, onDelete }) {
+export default function RecipeIngredientRow({
+  recipeIngredientID,
+  IngredientId,
+}) {
   const [ingredients, setIngredients] = useState([]);
 
   const fetchIngredients = async () => {
     try {
       const response = await axios.get(
-        `http://${IP_ADDRESS}:8000/api/ingredients/${itemName}`
+        `http://${IP_ADDRESS}:8000/api/ingredients/${IngredientId}`
       );
 
       if (response.status === 404) {
@@ -25,29 +28,12 @@ export default function ShoppingListRow({ ItemId, itemName, onDelete }) {
       // Handle other errors, e.g., network issues.
     }
   };
+
   useFocusEffect(
     React.useCallback(() => {
       fetchIngredients();
     }, [])
   );
-
-  const handleDeleteShoppingItem = async () => {
-    try {
-      const response = await fetch(
-        `http://${IP_ADDRESS}:8000/api/shoppingList/delete/${ItemId}`,
-        {
-          method: "DELETE",
-        }
-      );
-      const data = await response.json();
-      console.log(data.message);
-      onDelete();
-      // Add any additional logic or UI updates after successful deletion
-    } catch (error) {
-      console.log("Error deleting Shopping list item", error);
-      console.log(error.message);
-    }
-  };
 
   return (
     <View
@@ -57,9 +43,6 @@ export default function ShoppingListRow({ ItemId, itemName, onDelete }) {
       <View className="flex-row items-center gap-1 w-10/12">
         <Text>{ingredients.Name}</Text>
       </View>
-      <TouchableOpacity>
-        <TrashIcon size={20} color="#000" onPress={handleDeleteShoppingItem} />
-      </TouchableOpacity>
     </View>
   );
 }

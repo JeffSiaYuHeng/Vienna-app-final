@@ -155,7 +155,7 @@ export default function RecipeCard({
             </Text>
           </View>
 
-          <View className="  flex items-center justify-center px-1 h-5 ml-1 bg-C9BC17C rounded">
+          <View className="flex items-center justify-center px-1 h-5 ml-1 bg-C9BC17C rounded">
             <Text className="text-white font-bold text-xs">
               {formattedCookingTime}
             </Text>

@@ -147,7 +147,7 @@ export default function InitializeDietaryRestriction() {
         </View>
 
         <TouchableOpacity
-          onPress={() => navigation.navigate("TabNavigator")}
+          onPress={() => navigation.navigate("InitializeAllergen")}
           className=" absolute right-6 top-12"
         >
           <Text className=" text-base font-bold text-C2B5708">Skip</Text>

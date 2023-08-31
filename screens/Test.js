@@ -173,7 +173,7 @@ const AddRecipe = () => {
         end={[1, 0]} // Ending point (optional, default is [1,0])
         className="flex p-4 pt-10 justify-center flex-row w-full h-[80]  items-center"
       >
-        <Text className="text-lg font-bold text-white">Create a Recipe</Text>
+        <Text className="text-lg font-bold text-white">Edit a Recipe</Text>
       </LinearGradient>
       <View className="w-100 p-2 pt-4 ">
         <View

@@ -43,7 +43,7 @@ export function RatingIcon({ rating }) {
   return <View className="flex-row pl-1">{renderStars()}</View>;
 }
 
-const Test = () => {
+const MyRecipeTabs = () => {
   const navigation = useNavigation();
   const {
     params: {
@@ -300,7 +300,7 @@ const Test = () => {
   );
 };
 
-export default Test;
+export default MyRecipeTabs;
 
 //style
 const styles = StyleSheet.create({

@@ -6,6 +6,6 @@ const allergenController = require("../controllers/allergenController");
 router.get("/", allergenController.getAllAllergens);
 
 
-router.get("/:id", allergenController.getAllergenById); // Add this route
+router.get("/:id", allergenController.getAllergenById); 
 
 module.exports = router;

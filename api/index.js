@@ -31,38 +31,41 @@ const userRoutes = require("./routes/userRoutes");
 const recipeRoutes = require("./routes/recipeRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
 const instructionRoutes = require("./routes/instructionRoutes");
-const recipeLikeRoutes = require("./routes/recipeLikeRoutes"); // Add this line to load recipeLikeRoutes
-const userFollowRoutes = require("./routes/userFollowRoutes"); // Add this line to load userFollowRoutes
-const savedRecipeRoutes = require("./routes/savedRecipeRoutes"); // Add this line to load savedRecipeRoutes
-const shoppingListRoutes = require("./routes/shoppingListRoutes"); // Add this line to load shoppingListRoutes
-const recipeReviewRoutes = require("./routes/recipeReviewRoutes"); // Add this line to load recipeReviewRoutes
-const dietaryRestrictionRoutes = require("./routes/dietaryRestrictionRoutes"); // Add this line to load dietaryRestrictionRoutes
+const recipeLikeRoutes = require("./routes/recipeLikeRoutes");
+const userFollowRoutes = require("./routes/userFollowRoutes");
+const savedRecipeRoutes = require("./routes/savedRecipeRoutes");
+const shoppingListRoutes = require("./routes/shoppingListRoutes");
+const recipeReviewRoutes = require("./routes/recipeReviewRoutes");
+const dietaryRestrictionRoutes = require("./routes/dietaryRestrictionRoutes");
 const userDietaryRestrictionRoutes = require("./routes/userDietaryRestrictionRoutes");
-const allergenRoutes = require("./routes/allergenRoutes"); // Import the new allergen route
-const userAllergenRoutes = require("./routes/userAllergenRoutes"); // Import the new userAllergen route
-const recipeIngredientRoutes = require("./routes/recipeIngredientRoutes"); // Adjust the path as needed
-const ingredientRoutes = require("./routes/ingredientRoutes"); // Adjust the path as needed
-const IngredientSearchRoutes = require("./routes/IngredientSearchRoutes"); // Adjust the path as needed
-const notificationRoutes = require("./routes/notificationRoutes"); // Adjust the path as needed
+const allergenRoutes = require("./routes/allergenRoutes");
+const userAllergenRoutes = require("./routes/userAllergenRoutes");
+const recipeIngredientRoutes = require("./routes/recipeIngredientRoutes");
+const ingredientRoutes = require("./routes/ingredientRoutes");
+const IngredientSearchRoutes = require("./routes/IngredientSearchRoutes");
+const notificationRoutes = require("./routes/notificationRoutes");
 
 // Use routes
 app.use("/api/users", userRoutes);
 app.use("/api/recipes", recipeRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/instructions", instructionRoutes);
-app.use("/api/recipeLikes", recipeLikeRoutes); // Use recipeLikeRoutes under "/recipeLikes" endpoint
-app.use("/api/userFollow", userFollowRoutes); // Use userFollowRoutes under "/userFollow" endpoint
-app.use("/api/savedRecipes", savedRecipeRoutes); // Use savedRecipeRoutes under "/savedRecipes" endpoint
-app.use("/api/shoppingList", shoppingListRoutes); // Use shoppingListRoutes under "/shoppingList" endpoint
-app.use("/api/recipeReviews", recipeReviewRoutes); // Use recipeReviewRoutes under "/recipeReviews" endpoint
-app.use("/api/dietaryRestrictions", dietaryRestrictionRoutes); // Use dietaryRestrictionRoutes under "/dietaryRestrictions" endpoint
+app.use("/api/recipeLikes", recipeLikeRoutes);
+app.use("/api/userFollow", userFollowRoutes);
+app.use("/api/savedRecipes", savedRecipeRoutes);
+app.use("/api/shoppingList", shoppingListRoutes);
+app.use("/api/recipeReviews", recipeReviewRoutes);
+app.use("/api/dietaryRestrictions", dietaryRestrictionRoutes);
 app.use("/api/userDietaryRestriction", userDietaryRestrictionRoutes);
-app.use("/api/allergen", allergenRoutes); // Use the new allergen route
-app.use("/api/userAllergen", userAllergenRoutes); // Use the new userAllergen route
+app.use("/api/allergen", allergenRoutes);
+app.use("/api/userAllergen", userAllergenRoutes);
 app.use("/api/recipeIngredients", recipeIngredientRoutes);
 app.use("/api/ingredients", ingredientRoutes);
 app.use("/api/IngredientSearch", IngredientSearchRoutes);
 app.use("/api/notifications", notificationRoutes);
+
+
+
 
 
 

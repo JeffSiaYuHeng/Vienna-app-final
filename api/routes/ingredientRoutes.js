@@ -2,6 +2,11 @@ const express = require('express');
 const router = express.Router();
 const ingredientController = require('../controllers/ingredientController');
 
+
+// Get all ingredients
+router.get('/', ingredientController.getAllIngredients);
+
+
 // Create a new ingredient
 router.post('/', ingredientController.createIngredient);
 
@@ -18,3 +23,5 @@ router.put('/:id', ingredientController.updateIngredientById);
 router.delete('/:id', ingredientController.deleteIngredientById);
 
 module.exports = router;
+
+

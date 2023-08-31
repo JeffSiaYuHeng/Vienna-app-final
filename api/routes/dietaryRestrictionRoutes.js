@@ -6,6 +6,8 @@ const dietaryRestrictionController = require("../controllers/dietaryRestrictionC
 router.get("/", dietaryRestrictionController.getAllDietaryRestrictions);
 
 
-router.get("/:id", dietaryRestrictionController.getDietaryRestrictionById); // Add this route
+router.get("/:id", dietaryRestrictionController.getDietaryRestrictionById);
 
 module.exports = router;
+
+

@@ -33,7 +33,7 @@ export default function TrendingComponent() {
       };
 
       fetchRecipes();
-    }, []) // The empty dependency array means this effect runs when the component comes into focus and unmounts when it goes out of focus
+    }, [])
   );
 
   if (loading) {

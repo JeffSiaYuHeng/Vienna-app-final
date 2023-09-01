@@ -41,7 +41,7 @@ const StackNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {/* <Stack.Screen name="Test" component={Test} /> */}
+        <Stack.Screen name="Test" component={Test} />
 
         {/* Authorization */}
         <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />

@@ -35,18 +35,7 @@ const recipeSchema = new mongoose.Schema({
     ref: "User",
     required: true
   },
-  instructions: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Instruction"
-    }
-  ],
-  ingredients: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Ingredient"
-    }
-  ],
+
   calorie: {
     type: Number, // You can adjust this to the appropriate data type based on your requirements
     required: true

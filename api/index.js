@@ -44,6 +44,7 @@ const recipeIngredientRoutes = require("./routes/recipeIngredientRoutes");
 const ingredientRoutes = require("./routes/ingredientRoutes");
 const IngredientSearchRoutes = require("./routes/IngredientSearchRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
+const filteredRecipeRoutes = require("./routes/filteredRecipeRoutes");
 
 // Use routes
 app.use("/api/users", userRoutes);
@@ -63,12 +64,7 @@ app.use("/api/recipeIngredients", recipeIngredientRoutes);
 app.use("/api/ingredients", ingredientRoutes);
 app.use("/api/IngredientSearch", IngredientSearchRoutes);
 app.use("/api/notifications", notificationRoutes);
-
-
-
-
-
-
+app.use("/api/filteredRecipeRoutes", filteredRecipeRoutes);
 
 app.listen(port, () => {
   console.log("Server running on port 8000");

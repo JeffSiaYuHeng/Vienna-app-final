@@ -67,10 +67,6 @@ const getUserAllergensByUserId = async (req, res) => {
     });
 
     if (userAllergens.length === 0) {
-      // If no user allergens are found for the userId, respond with a 404 status
-      res.status(404).json({
-        message: "No user allergens found for the specified userId",
-      });
     } else {
       // Respond with the retrieved user allergens
       res.status(200).json({

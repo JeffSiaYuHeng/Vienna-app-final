@@ -157,7 +157,7 @@ export default function InitializeDietaryRestriction() {
       <View className="w-100 h-screen px-5 pt-2 ">
         <TouchableOpacity
           onPress={clearAllSelections} // Call the clearAllSelections function
-          className="w-[70px] self-end bg-red-400 h-8 justify-around px-3 rounded-[10px] items-center flex-row mb-2"
+          className="w-[80px] self-end bg-red-400 h-8 justify-around px-3 rounded-[10px] items-center flex-row mb-2"
         >
           <Text className="font-bold text-sm text-white">Clear All</Text>
         </TouchableOpacity>

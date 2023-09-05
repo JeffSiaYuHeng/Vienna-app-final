@@ -75,7 +75,7 @@ export default function EditUserDietaryRestriction() {
       <View className="w-100 items-center justify-center p-2">
         <TouchableOpacity
           onPress={toggleUserDietaryRestriction}
-          className=" items-center flex-row justify-between p-2  w-36 bg-CC5ECBE rounded-lg"
+          className=" items-center flex-row justify-center p-2  w-48 bg-CC5ECBE rounded-lg"
         >
           <Text className="font-bold text-C2B5708 ">
             Add Dietary Restriction

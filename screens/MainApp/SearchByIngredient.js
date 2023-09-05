@@ -161,7 +161,7 @@ const IngredientSearchScreen = () => {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={clearAllSelections} // Call the clearAllSelections function
-            className=" w-[70px] bg-red-400 h-8 justify-around px-3 rounded-lg items-center flex-row "
+            className=" w-[80px] bg-red-400 h-8 justify-around px-3 rounded-lg items-center flex-row "
           >
             <Text className="font-bold text-sm text-white">Clear All</Text>
           </TouchableOpacity>

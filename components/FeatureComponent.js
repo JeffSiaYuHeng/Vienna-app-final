@@ -12,6 +12,9 @@ export default function FeatureComponent() {
   }
 
 
+  const NavigateFilteredRecipe = () =>{
+    navigation.navigate("FilteredRecipe");
+  }
 
 
 
@@ -43,7 +46,7 @@ export default function FeatureComponent() {
           <TouchableOpacity onPress={NavigateToSearchByIngredient} className="bg-CC5ECBE p-3 rounded-xl mr-2">
             <Text className="font-bold text-C2B5708 text-base">Search By Ingredient</Text>
           </TouchableOpacity>
-          <TouchableOpacity className="bg-CC5ECBE p-3 rounded-xl mr-2">
+          <TouchableOpacity onPress={NavigateFilteredRecipe} className="bg-CC5ECBE p-3 rounded-xl mr-2">
             <Text className="font-bold text-C2B5708 text-base">Filtered Recipe</Text>
           </TouchableOpacity>
         </ScrollView>

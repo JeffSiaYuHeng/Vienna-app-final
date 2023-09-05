@@ -14,6 +14,7 @@ import UserFollowers from "../screens/MainApp/UserFollowers";
 import UserLikedRecipe from "../screens/MainApp/UserLikedRecipe";
 import SearchByIngredient from "../screens/MainApp/SearchByIngredient";
 import SearchRecipeByName from "../screens/MainApp/SearchRecipeByName";
+import FilteredRecipe from "../screens/MainApp/FilteredRecipe";
 
 // /MainAppNavigation
 import TabNavigator from "./TabNavigator";
@@ -41,7 +42,7 @@ const StackNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Test" component={Test} />
+        {/* <Stack.Screen name="Test" component={Test} /> */}
 
         {/* Authorization */}
         <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
@@ -78,7 +79,10 @@ const StackNavigator = () => {
           name="SearchRecipeByName"
           component={SearchRecipeByName}
         />
-
+        <Stack.Screen
+          name="FilteredRecipe"
+          component={FilteredRecipe}
+        />
         {/* MainApp END */}
 
         {/* MainAppNavigation */}

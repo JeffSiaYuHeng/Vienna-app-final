@@ -60,6 +60,7 @@ const getFilteredRecipes = async (req, res) => {
     const ingredientIds = await RecipeIngredient.distinct("RecipeIngredientId");
 
     // Filter recipes based on ingredients that match user restrictions/allergens
+
     const filteredRecipeIds = [];
 
     for (const ingredientId of ingredientIds) {
@@ -89,16 +90,22 @@ const getFilteredRecipes = async (req, res) => {
       _id: { $in: filteredRecipeIds },
     });
 
-    console.log(filteredRecipeIds);
+    // Fetch all recipes
+    const allRecipes = await Recipe.find();
 
-    res.status(200).json({ filteredRecipes });
+    // Filter out recipes that are not in filteredRecipes
+    const suitableRecipes = allRecipes.filter((recipe) => {
+      return !filteredRecipes.some((filteredRecipe) => {
+        return filteredRecipe._id.equals(recipe._id);
+      });
+    });
+
+    res.status(200).json({ suitableRecipes });
   } catch (error) {
     console.error("Error fetching filtered recipes:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
-
-// ...
 
 module.exports = {
   getFilteredRecipes,

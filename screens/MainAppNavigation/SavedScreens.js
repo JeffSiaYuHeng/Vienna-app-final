@@ -140,10 +140,8 @@ export default function UserSavedRecipe() {
             />
           ))
         ) : (
-          <View className="w-100 items-center">
-            <Text>
-              There is no Saved Recipe
-            </Text>
+          <View className="items-center justify-center w-100 h-4/5">
+            <ActivityIndicator size="large" color="#7caf75" />
           </View>
         )}
       </ScrollView>

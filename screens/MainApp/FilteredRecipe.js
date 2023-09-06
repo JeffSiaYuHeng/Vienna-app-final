@@ -7,6 +7,7 @@ import {
   StyleSheet,
   TextInput,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import { XMarkIcon } from "react-native-heroicons/solid";
 import { LinearGradient } from "expo-linear-gradient";
@@ -18,31 +19,60 @@ import IP_ADDRESS from "../../config"; // Adjust the path as needed
 import RecipeCard from "../../widgets/RecipeCard";
 const FilteredRecipe = () => {
   const [filteredData, setFilteredData] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
 
   const HomepageGate = () => {
     navigation.navigate("TabNavigator");
   };
 
-useFocusEffect(
-  React.useCallback(() => {
-    const fetchFilteredRecipes = async () => {
-      try {
-        const token = await AsyncStorage.getItem("authToken");
-        const decodedToken = jwt_decode(token);
-        const userId = decodedToken.userId;
-        const response = await axios.get(
-          `http://${IP_ADDRESS}:8000/api/filteredRecipeRoutes/?userId=${userId}`
-        );
-        setFilteredData(response.data.suitableRecipes);
-      } catch (error) {
-        console.error("Error fetching filtered recipes", error);
-      }
-    };
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchFilteredRecipes = async () => {
+        try {
+          const token = await AsyncStorage.getItem("authToken");
+          const decodedToken = jwt_decode(token);
+          const userId = decodedToken.userId;
+          const response = await axios.get(
+            `http://${IP_ADDRESS}:8000/api/filteredRecipeRoutes/?userId=${userId}`
+          );
+          setFilteredData(response.data.suitableRecipes);
+          setLoading(false);
+        } catch (error) {
+          console.error("Error fetching filtered recipes", error);
+          setLoading(false);
+        }
+      };
 
-    fetchFilteredRecipes();
-  }, [])
-);
+      fetchFilteredRecipes();
+    }, [])
+  );
+
+  if (!filteredData && loading) {
+    return (
+      <View>
+        <LinearGradient
+          colors={["#7caf75", "#6db29a"]} // Adjust the gradient colors as needed
+          start={[0, 0]} // Starting point (optional, default is [0,0])
+          end={[1, 0]} // Ending point (optional, default is [1,0])
+          className="flex p-4 pt-10 justify-between flex-row w-full h-[80]  items-center"
+        >
+          <View></View>
+          <Text className="text-lg font-bold text-white">FilteredRecipe</Text>
+          <TouchableOpacity onPress={HomepageGate}>
+            <XMarkIcon size={25} color="#FFFFFF" />
+          </TouchableOpacity>
+        </LinearGradient>
+        <View
+          style={styles.container}
+          className="items-center justify-center w-100 h-4/5"
+        >
+          <ActivityIndicator size="large" color="#7caf75" />
+        </View>
+      </View>
+    );
+  }
+
   return (
     <SafeAreaView>
       <LinearGradient
@@ -85,8 +115,8 @@ useFocusEffect(
               />
             ))
           ) : (
-            <View className="w-100 items-center">
-              <Text>No Recipe found.</Text>
+            <View className="items-center justify-center w-100 h-4/5">
+              <ActivityIndicator size="large" color="#7caf75" />
             </View>
           )}
         </ScrollView>

@@ -24,7 +24,8 @@ const FilteredRecipe = () => {
     navigation.navigate("TabNavigator");
   };
 
-  useEffect(() => {
+useFocusEffect(
+  React.useCallback(() => {
     const fetchFilteredRecipes = async () => {
       try {
         const token = await AsyncStorage.getItem("authToken");
@@ -33,15 +34,15 @@ const FilteredRecipe = () => {
         const response = await axios.get(
           `http://${IP_ADDRESS}:8000/api/filteredRecipeRoutes/?userId=${userId}`
         );
-        setFilteredData(response.data.filteredRecipes);
+        setFilteredData(response.data.suitableRecipes);
       } catch (error) {
         console.error("Error fetching filtered recipes", error);
       }
     };
 
     fetchFilteredRecipes();
-  }, []);
-
+  }, [])
+);
   return (
     <SafeAreaView>
       <LinearGradient

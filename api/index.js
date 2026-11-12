@@ -10,15 +10,16 @@ const cors = require("cors");
 app.use(cors());
 app.use(express.json());
 app.use("/api/files", express.static(path.join(__dirname, "files")));
+const databaseUrl = process.env.DATABASE_URL;
+if (!databaseUrl) {
+  throw new Error("DATABASE_URL is not set");
+}
+
 mongoose
-  .connect(
-    // "mongodb+srv://JeffSia:f4aJC4yp5sdcutPv@viennafinal.a0edcrj.mongodb.net/?retryWrites=true&w=majority",
-    "mongodb+srv://JeffSia:hJ4YkeMI521zjtfH@viennaapp.beqbheu.mongodb.net/?retryWrites=true&w=majority",
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    }
-  )
+  .connect(databaseUrl, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => {
     console.log("Connected to Mongo Db");
   })

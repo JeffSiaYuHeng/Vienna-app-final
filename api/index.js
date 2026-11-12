@@ -1,5 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+require("dotenv").config();
 const mongoose = require("mongoose");
 const passport = require("passport");
 const path = require("path"); // Add this line to import the 'path' module
